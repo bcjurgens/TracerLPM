@@ -1,0 +1,60 @@
+LIBRARY	TracerLPMfunctions.XLL
+ 
+EXPORTS
+       ; Standard XLL functions
+		   xlAutoOpen
+		   xlAutoClose
+		   xlAutoRegister12
+		   xlAutoAdd
+		   xlAutoRemove
+		   xlAddInManagerInfo12
+       
+       ; UDFs
+			AlphaStablePDF
+			AlphaDensity
+			PFM
+			PFM_He4
+			EMM
+			EMM_He4
+			PEM
+			;Full_PEM
+			PEM_He4
+			;Full_PEM_He4
+			EPM
+			EPM_He4
+			GAM
+			GAM_He4
+			gt_DM
+			DM
+			DM_He4
+			gt_PFM
+			gt_EMM
+			gt_PEM
+			gt_GAM
+			;gt_Full_PEM
+			gt_EPM
+			gt_BMM_PFM
+			gt_BMM_EMM
+			gt_BMM_GAM
+			gt_BMM_PEM
+			gt_BMM_EPM
+			gt_BMM_DM
+			gt_UserDefinedAge
+			BMM_DM
+			BMM_EMM
+			BMM_PEM
+			BMM_EPM
+			BMM_PFM
+			BMM_GAM
+			BMM_DM_He4
+			BMM_EMM_He4
+			BMM_GAM_He4
+			BMM_PEM_He4
+			BMM_EPM_He4
+			BMM_PFM_He4
+			UserDefinedTracerOut
+			UserDefinedTracerOut_He4
+			gt_FDM
+			FDM
+			;DM_Internal
+			;SolveForAge
