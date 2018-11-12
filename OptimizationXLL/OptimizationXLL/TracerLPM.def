@@ -1,0 +1,18 @@
+LIBRARY	TracerLPM_2015.XLL
+ 
+EXPORTS
+       ; Standard XLL functions
+		   xlAutoOpen
+		   xlAutoClose
+		   xlAutoRegister12
+		   xlAutoAdd
+		   xlAutoRemove
+		   xlAddInManagerInfo12
+       
+       ; UDFs
+			SolveNewtonMethod
+			SolveDirectSearch
+			UZ_Solver1D
+			UZ_Solver2D
+
+			
