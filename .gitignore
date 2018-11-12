@@ -42,7 +42,7 @@ TestResult.xml
 
 # Build Results of an ATL Project
 [Dd]ebugPS/
-[Rr]eleasePS/
+#[Rr]eleasePS/
 dlldata.c
 
 # Benchmark Results
