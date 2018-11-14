@@ -1,0 +1,118 @@
+Installing_TracerLPM.txt
+
+                                TracerLPM
+
+       An Excel® workbook for interpreting groundwater age 
+                    from Environmental Tracers
+
+
+             TracerLPM - Version 1.0  November 16, 2011
+
+Instructions for installation, execution, and testing are provided
+below.  After installation, see the file doc\TracerLPM.pdf in the TracerLPM
+installation directory for summary information on TracerLPM.
+
+For assistance, enhancement requests, or to report bugs, contact the
+author by sending e-mail to bjurgens@usgs.gov.
+
+
+                            TABLE OF CONTENTS
+
+                         A. SYSTEM REQUIREMENTS
+                         B. DISTRIBUTION FILE
+                         C. DOCUMENTATION
+                         D. INSTALLING
+                             o Installing TracerLPM
+                             o TracerLPM directory structure
+                         E. RUNNING THE SOFTWARE
+                         F. UNINSTALLING
+                         G. CONTACTS
+
+
+A. SYSTEM REQUIREMENTS
+
+For installation of TracerLPM, 20 megabytes of free disk space is needed.
+
+To run TracerLPM, the following are necessary:
+
+  - Windows XP or later
+  - Excel 2007 or later (Office 12 or later)
+
+
+B. DISTRIBUTION FILE
+
+The following distribution files (containing the software, test data sets,
+and information files) are currently available.
+
+  TracerLPM_x32.msi - Compiled for 32-bit versions of Excel using 
+                      Microsoft Visual C++ 2010
+
+  TracerLPM_x64.msi - Compiled for 64-bit versions of Excel using 
+                      Microsoft Visual C++ 2010
+
+
+C. DOCUMENTATION
+
+Jurgens, B.C., Böhlke, J.K., and Eberts, S.M., 2012, TracerLPM: An Excel® workbook 
+	for interpreting environmental tracers in ground water: 
+	U.S. Geological Survey Techniques and Methods Report 4-F3, 60p.
+
+   This users guide is available in electronic format. A Portable
+   Document Format (PDF) file is included in the doc subdirectory of
+   the TracerLPM program distribution. 
+
+D. INSTALLING
+
+Installing TracerLPM
+------------------
+
+Note that if the software is to be installed on a server system, 
+the person installing the software generally must have administrator 
+rights.
+
+Before TracerLPM can be installed, it is imperative to determine the version
+of Excel installed on the user's machine. For 64-bit versions of Excel 2010,
+users should download TracerLPM_x64.msi to their machine. For 32-bit versions
+of Excel 2007 and 2010, users should download TracerLPM_x32.msi.
+
+To install the software, double-click TracerLPM_x32.msi or TracerLPM_x64.msi
+to execute the installation program and follow the directions on the screen.
+By default, the software is installed in the directory
+C:\Program Files\USGS\TracerLPM.  This is the recommended installation 
+directory, but you may use other directories or disk drives.
+
+
+TracerLPM directory structure
+---------------------------
+
+The following directory structure will be created (the contents of each
+directory are shown to the right):
+
+   TracerLPM              file TracerLPM_V_1_0.xlsm;
+     `-----doc            documentation files 
+     `-----examples       examples from user guide
+
+E. RUNNING THE SOFTWARE
+
+To run the software, users can open the TracerLPM_V_1_0.xlsm workbook and choose to 
+enable macros. This will cause the program to automatically check that the Excel
+add-in, TracerLPM_functions_64_v_1.xll or TracerLPM_functions_32_v_1.xll, has
+been installed correctly. The program will also check to see if the Sover add-in
+is also installed.
+
+It is recommended that users save any altered versions of TracerLPM separately
+from the original file, TracerLPM_V_1_0.xlsm, to prevent accidental overwrite.
+
+E. UNINSTALLING
+
+To uninstall TracerLPM, double-click TracerLPM_x32.msi or TracerLPM_x64.msi
+and follow the directions on the screen. Alternatively, the program can be
+unistalled from the Control Panel of the windows operating system and selecting
+to uninstall TracerLPM from the list of programs.
+
+
+G. CONTACTS
+
+Inquiries about this software distribution should be directed to:
+
+e-mail:  bjurgens@usgs.gov
