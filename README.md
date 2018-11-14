@@ -1,2 +1,6 @@
 # TracerLPM
 An Excel workbook program for evaluating groundwater age distributions from environmental tracer data
+
+This folder contains the installation packages (.msi) for 32- and 64-bit versions of TracerLPM. The installation package must macth the version of Microsoft Office installed on a user's machine. By default, the 32-bit version of Office is normally installed even though most operating systems are 64-bit. Only use the 64-bit installation package of TracerLPM if the version of Office is 64-bit.
+
+Subfolders contain all the code and workbooks used to develop TracerLPM. The Workbook folder contains the latest version of the Excel workbook and is written in visual basic for applications (VBA). The folder LPM_FunctionsXLL contains Visual Studio (2015) solution code written in C++ that computes tracer concentrations. The folder OptimizationXLL contains Visual Studio (2015) solution code written in C++ that computes best-fit lumped parameter models to environmental tracer data. The Visual Studio codes generate XLLs (dynamic linked library recognized by Excel) that are installed in the Microsoft Add-in folder on a user's machine. The XLL have worksheet functions that can be called from any worksheet cell in TracerLPM. TracerLPM will pass data to the XLL fitting routines and generate output from the results. 
