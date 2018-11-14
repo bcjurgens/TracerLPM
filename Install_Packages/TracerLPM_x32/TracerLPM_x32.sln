@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "TracerLPM_x32", "TracerLPM_x32\TracerLPM_x32.vdproj", "{D5B8A650-9576-4291-BC51-54D5C4ED27E9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Default = Debug|Default
+		Release|Default = Release|Default
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D5B8A650-9576-4291-BC51-54D5C4ED27E9}.Debug|Default.ActiveCfg = Debug
+		{D5B8A650-9576-4291-BC51-54D5C4ED27E9}.Debug|Default.Build.0 = Debug
+		{D5B8A650-9576-4291-BC51-54D5C4ED27E9}.Release|Default.ActiveCfg = Release
+		{D5B8A650-9576-4291-BC51-54D5C4ED27E9}.Release|Default.Build.0 = Release
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
