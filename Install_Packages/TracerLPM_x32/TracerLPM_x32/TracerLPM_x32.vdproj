@@ -21,6 +21,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_3811E5A098A14F58A2DC79A6DF067CFC"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_51009915352D4DD5B2F0D77EB70D166A"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -52,12 +58,6 @@
         "Entry"
         {
         "MsmKey" = "8:_C12E51A372A94162BA4137DA044E877D"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_C328F21E4EB6413DB2F92B4A05274664"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -417,7 +417,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:TracerLPM_x32"
         "ProductCode" = "8:{F3DF887A-496C-4D15-BE58-68453B29CBB7}"
-        "PackageCode" = "8:{2BED3953-21D4-42E9-ABE1-905A4CB995D0}"
+        "PackageCode" = "8:{433F3BEB-CBF1-4641-8DC0-BAD31BFBE97E}"
         "UpgradeCode" = "8:{47E12FB6-C93F-422F-A2E0-EC4085760F2A}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -961,6 +961,20 @@
         }
         "MergeModule"
         {
+            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_3811E5A098A14F58A2DC79A6DF067CFC"
+            {
+            "UseDynamicProperties" = "11:TRUE"
+            "IsDependency" = "11:FALSE"
+            "SourcePath" = "8:C:\\Program Files (x86)\\Common Files\\Merge Modules\\Microsoft_VC140_CRT_x86.msm"
+                "Properties"
+                {
+                }
+            "LanguageId" = "3:0"
+            "Exclude" = "11:FALSE"
+            "Folder" = "8:"
+            "Feature" = "8:"
+            "IsolateTo" = "8:"
+            }
             "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_51009915352D4DD5B2F0D77EB70D166A"
             {
             "UseDynamicProperties" = "11:TRUE"
@@ -980,20 +994,6 @@
             "UseDynamicProperties" = "11:TRUE"
             "IsDependency" = "11:FALSE"
             "SourcePath" = "8:C:\\Program Files (x86)\\Common Files\\Merge Modules\\Microsoft_VC140_OpenMP_x86.msm"
-                "Properties"
-                {
-                }
-            "LanguageId" = "3:0"
-            "Exclude" = "11:FALSE"
-            "Folder" = "8:"
-            "Feature" = "8:"
-            "IsolateTo" = "8:"
-            }
-            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_C328F21E4EB6413DB2F92B4A05274664"
-            {
-            "UseDynamicProperties" = "11:TRUE"
-            "IsDependency" = "11:FALSE"
-            "SourcePath" = "8:C:\\Program Files (x86)\\Common Files\\Merge Modules\\Microsoft_VC140_CXXAMP_x86.msm"
                 "Properties"
                 {
                 }
