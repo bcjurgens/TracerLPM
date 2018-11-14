@@ -1,0 +1,8 @@
+Version	Date		Description
+----------------------------------------------------------------------------------------------------------------
+1.0	07/19/2012	Initial Release
+1.0	07/25/2012	Re-release of initial release with installation icons and error trapping updates to code
+1.0.1	08/30/2012	Minor fix to scaling factor on TracerInput worksheet
+1.0.1	03/07/2014	Re-release of version 1.0.1 with updated TracerLPM document (eqn. edits in Appendix A)
+1.0.2	03/25/2015	Fix to TracerTracerFits and TimeSeriesFits that prevented tracers with 0 concentration
+			from being included in optimization. 
