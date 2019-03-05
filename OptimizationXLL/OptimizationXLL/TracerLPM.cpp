@@ -500,7 +500,7 @@ __declspec(dllexport) LPXLOPER12 WINAPI SolveNewtonMethod(LPXLOPER12 lxMeasTrace
 					xOpArray[i].xltype=xltypeNum;
 					xOpArray[i].val.num=V(i/2);
 					xOpArray[i+1].xltype=xltypeNum;
-					xOpArray[i+1].val.num=Cov(i/2,i/2);
+					xOpArray[i+1].val.num=sqrt(Cov(i/2,i/2));
 				}
 
 				xOpArray[2*n].xltype=xltypeNum;
@@ -579,7 +579,7 @@ __declspec(dllexport) LPXLOPER12 WINAPI SolveNewtonMethod(LPXLOPER12 lxMeasTrace
 				{
 					_fprintf_p( MCout, "%g", V(i/2) );
 					_fprintf_p( MCout, "%s", Delim );
-					_fprintf_p( MCout, "%g", Cov(i/2,i/2) );
+					_fprintf_p( MCout, "%g", sqrt(Cov(i/2,i/2)));
 					_fprintf_p( MCout, "%s", Delim );
 				}
 				_fprintf_p( MCout, "%g", ChiSqr );
