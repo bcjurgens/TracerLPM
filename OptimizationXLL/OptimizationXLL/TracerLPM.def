@@ -11,7 +11,7 @@ EXPORTS
        
        ; UDFs
 			SolveNewtonMethod
-			SolveDirectSearch
+			SolveLevenbergMarquardt
 			UZ_Solver1D
 			UZ_Solver2D
 
