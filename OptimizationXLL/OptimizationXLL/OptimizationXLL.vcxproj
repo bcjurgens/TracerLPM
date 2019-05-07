@@ -78,6 +78,7 @@
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>C:\Users\bjurgens\Documents\Visual Studio 2015\Projects\TracerLPM_2015\TracerLPM_2015;$(IncludePath)</IncludePath>
     <TargetExt>.dll</TargetExt>
+    <TargetName>TracerLPM_Opt_64</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -126,7 +127,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <OutputFile>$(OutDir)$(ProjectName).xll</OutputFile>
+      <OutputFile>$(OutDir)TracerLPM_Opt_64.xll</OutputFile>
       <AdditionalLibraryDirectories>C:\2010 Office System Developer Resources\Excel2010XLLSDK\LIB\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>xlcall32.lib;frmwrk32.lib;comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>TracerLPM.def</ModuleDefinitionFile>
