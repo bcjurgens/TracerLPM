@@ -252,15 +252,15 @@ __declspec(dllexport) LPXLOPER12 WINAPI SolveNewtonMethod(LPXLOPER12 lxMeasTrace
 	LPXLOPER12 lxLowBounds, LPXLOPER12 lxHiBounds, LPXLOPER12 lxTracers,FP lxdateRange[],LPXLOPER12 lxTracerInputRange, 
 	LPXLOPER12 lxLambda, LPXLOPER12 lxuzTime, LPXLOPER12 lxUZtimeCond, LPXLOPER12 lxTracerComp_2, LPXLOPER12 lxDIC_1, LPXLOPER12 lxDIC_2,double Uppm, double THppm, 
 	double Porosity, double SedDensity, double He4SolnRate, LPXLOPER12 lxIsMonteCarlo, int iTotalSims, LPXLOPER12 lxIsWriteOut, LPXLOPER12 lxOutFile)
-{	
+{
 	std::clock_t start;
-	start=std::clock();
-	
-	double HiChiSqr=0,ChiSqr=0,PrevChiSqr=0,Tol=0.0001, PrevNormV, NormV=100.,NormV_Diff=100.,ScaleFact=0.4, Mult=1;
-	double ModelArgs[10]={0,0,0,0,0,0,0,0,0,0}, DoF, test, Lambda2, ChiSqrDiff, Mean, StdDev;
-	int nIters=0,k,j,i, HiTracer,n, TracerNum=0, SimCnt=0, size;
-	MatrixXd LJo,InitTracerOutput, LPnum, Result, ATA, ATD, Jo,JoT, Cov, ID;
-	VectorXd D,e,sS,V;
+	start = std::clock();
+
+	double HiChiSqr = 0, ChiSqr = 0, PrevChiSqr = 0, Tol = 0.0001, PrevNormV, NormV = 100., NormV_Diff = 100., ScaleFact = 0.4, Mult = 1;
+	double ModelArgs[10] = { 0,0,0,0,0,0,0,0,0,0 }, DoF, test, Lambda2, ChiSqrDiff, Mean, StdDev;
+	int nIters = 0, k, j, i, HiTracer, n, TracerNum = 0, SimCnt = 0, size;
+	MatrixXd LJo, InitTracerOutput, LPnum, Result, ATA, ATD, Jo, JoT, Cov, ID;
+	VectorXd D, e, sS, V;
 	bool IsOutBounds, IsSolveLM;
 	XLOPER12 xMulti[1];
 	HWND hwndPB;
@@ -268,31 +268,509 @@ __declspec(dllexport) LPXLOPER12 WINAPI SolveNewtonMethod(LPXLOPER12 lxMeasTrace
 	char    Delim[3] = ", ";
 
 #ifdef _DEBUG
-	if ( fopen_s( &stream, "TracerOutput.txt", "w" ) == 0)
+	if (fopen_s(&stream, "TracerOutput.txt", "w") == 0)
 #endif
 
-	if(lxMeasTracerConcs->val.array.columns*lxMeasTracerConcs->val.array.rows>=1 && lxdateRange->rows>1 && lxTracerInputRange->val.array.columns*lxTracerInputRange->val.array.rows>1 && lxLambda->xltype == lxuzTime->xltype && lxuzTime->xltype == lxTracers->xltype)
-	{
-
-		LPM Solver(ModelNum,lxMeasTracerConcs, lxFitParmIndexes, lxInitModVals, lxTracers, lxdateRange, lxTracerInputRange, lxLambda, lxSampleDates, 
-					lxuzTime,lxUZtimeCond,lxMeasSigmas, lxHiBounds,lxLowBounds, lxTracerComp_2, Uppm, THppm, Porosity, SedDensity, He4SolnRate, lxIsMonteCarlo, iTotalSims, lxIsWriteOut);
-
-		n=Solver.obj.Model.FitParmIndexes.Val.size();
-		TracerNum=Solver.obj.Sample.ActiveVals.sum();		
-		if (Solver.obj.Model.MonteCarlo.IsMonteCarlo==true)
+		if (lxMeasTracerConcs->val.array.columns*lxMeasTracerConcs->val.array.rows >= 1 && lxdateRange->rows>1 && lxTracerInputRange->val.array.columns*lxTracerInputRange->val.array.rows>1 && lxLambda->xltype == lxuzTime->xltype && lxuzTime->xltype == lxTracers->xltype)
 		{
-			size = 4*n+7+(2*TracerNum);
-			if (Solver.obj.Model.MonteCarlo.IsWriteOut==true)
+
+			LPM Solver(ModelNum, lxMeasTracerConcs, lxFitParmIndexes, lxInitModVals, lxTracers, lxdateRange, lxTracerInputRange, lxLambda, lxSampleDates,
+				lxuzTime, lxUZtimeCond, lxMeasSigmas, lxHiBounds, lxLowBounds, lxTracerComp_2, Uppm, THppm, Porosity, SedDensity, He4SolnRate, lxIsMonteCarlo, iTotalSims, lxIsWriteOut);
+
+			n = Solver.obj.Model.FitParmIndexes.Val.size();
+			TracerNum = Solver.obj.Sample.ActiveVals.sum();
+			if (Solver.obj.Model.MonteCarlo.IsMonteCarlo == true)
 			{
-				wchar_t *FileName=deep_copy_wcs(lxOutFile->val.str);
-				if ( _wfopen_s( &MCout, FileName, L"w" ) == 0); //Need to add error trap here in case file doesn't open
-				else
+				size = 4 * n + 7 + (2 * TracerNum);
+				if (Solver.obj.Model.MonteCarlo.IsWriteOut == true)
 				{
-					char FileName[]="MonteCarloOut.txt";
-					if ( fopen_s( &MCout, FileName, "w" ) == 0);
+					wchar_t *FileName = deep_copy_wcs(lxOutFile->val.str);
+					if (_wfopen_s(&MCout, FileName, L"w") == 0); //Need to add error trap here in case file doesn't open
 					else
 					{
-						printf( "The monte carlo output file could not be opened...aborting\n" );
+						char FileName[] = "MonteCarloOut.txt";
+						if (fopen_s(&MCout, FileName, "w") == 0);
+						else
+						{
+							printf("The monte carlo output file could not be opened...aborting\n");
+							//abort function
+						}
+					}
+					delete FileName;
+				}
+			}
+			else
+				size = 2 * n + 6;
+			// Create an array of XLOPER12 values.
+			XLOPER12 *xOpArray = (XLOPER12 *)malloc(size * sizeof(XLOPER12));
+			for (i = 0; i < size; i++)
+			{
+				xOpArray[i].xltype = xltypeNum;
+				xOpArray[i].val.w = -99;
+			}
+
+			LJo.resize(TracerNum, 1);
+			Jo.resize(TracerNum, n);
+			JoT.resize(n, TracerNum);
+			D.resize(TracerNum);
+
+			sS.resize(n);
+			V.resize(n);
+
+			for (j = 0; j<8; j++)
+				ModelArgs[j] = test = Solver.obj.Model.InitModVals(j);
+			for (j = 0; j<n; j++)
+				V(j) = ModelArgs[Solver.obj.Model.FitParmIndexes.Val[j] - 1];
+			if (Solver.obj.Model.FitParmIndexes.isUZtime == true)
+			{
+				for (j = 0; j<Solver.obj.Tracer.Tracers.size(); j++)
+				{
+					if (Solver.obj.Tracer.UZtimeCond[j] == 1)
+						Solver.obj.Tracer.UZtime(j) = ModelArgs[0];
+				}
+			}
+
+			InitTracerOutput = Solver.LPM_TracerOutput(ModelArgs[1], ModelArgs[2], ModelArgs[3],
+				ModelArgs[4], ModelArgs[5], ModelArgs[6], ModelArgs[7], lxDIC_1->val.num, lxDIC_2->val.num);
+
+#ifdef _DEBUG
+			_fprintf_p(stream, "%g", ModelArgs[0]);
+			_fprintf_p(stream, "%s", Delim);
+			_fprintf_p(stream, "%g", ModelArgs[1]);
+			_fprintf_p(stream, "%s", Delim);
+			_fprintf_p(stream, "%g", ModelArgs[2]);
+			_fprintf_p(stream, "%s", Delim);
+			_fprintf_p(stream, "%g", ModelArgs[3]);
+			_fprintf_p(stream, "%s", Delim);
+			_fprintf_p(stream, "%g", ModelArgs[4]);
+			_fprintf_p(stream, "%s", Delim);
+			_fprintf_p(stream, "%g", ModelArgs[5]);
+			_fprintf_p(stream, "%s", Delim);
+			_fprintf_p(stream, "%g", ModelArgs[6]);
+			_fprintf_p(stream, "%s", Delim);
+			_fprintf_p(stream, "%g", ModelArgs[7]);
+			_fprintf_p(stream, "%s\n", "");
+#endif
+			for (j = 0; j<TracerNum; j++)
+			{
+				D(j) = (Solver.obj.Sample.MeasTracerConcs(j) - InitTracerOutput(j)) / Solver.obj.Sample.MeasSigmas(j);
+				ChiSqr += D(j)*D(j);
+#ifdef _DEBUG
+				_fprintf_p(stream, "%g", ChiSqr);
+				_fprintf_p(stream, "%s", Delim);
+				_fprintf_p(stream, "%g\n", InitTracerOutput(j));
+#endif
+			}
+			ID = MatrixXd::Identity(JoT.rows(), Jo.cols());
+			do
+			{
+				Tol = 0.0001;
+				NormV = 100;
+				PrevNormV = 101;
+				NormV_Diff = 100;
+				nIters = 0;
+				ScaleFact = 0.5;
+				IsSolveLM = false;
+				Lambda2 = 100;
+				do
+				{
+					HiChiSqr = 0;
+					nIters++;
+					for (j = 0; j<n; j++)
+					{
+						LJo = Solver.d_dx_LPM_Model(ModelArgs[1], ModelArgs[2], ModelArgs[3],
+							ModelArgs[4], ModelArgs[5], ModelArgs[6], ModelArgs[7], lxDIC_1->val.num, lxDIC_2->val.num, Solver.obj.Model.FitParmIndexes.Val[j]);
+
+						for (i = 0; i<TracerNum; i++)
+						{
+#ifdef _DEBUG
+							test = LJo(i);
+							_fprintf_p(stream, "%g", test);
+							_fprintf_p(stream, "%s", Delim);
+#endif
+							Jo(i, j) = JoT(j, i) = LJo(i) / Solver.obj.Sample.MeasSigmas(i);
+							if (D(i)*D(i) > HiChiSqr)
+							{
+								HiChiSqr = D(i)*D(i);
+								HiTracer = i;
+							}
+						}
+#ifdef _DEBUG
+						_fprintf_p(stream, "%s\n", "");
+#endif
+					}
+					ATA = JoT*Jo;
+					if (Lambda2<2)
+						IsSolveLM = false;
+					if (IsSolveLM)
+					{
+						if (ChiSqr>PrevChiSqr)
+							Lambda2 *= 2;
+						else
+							Lambda2 /= 2;
+						ID.diagonal(0) = Lambda2*ATA.diagonal(0);
+						ATA += ID;
+					}
+					ATD = JoT*D;
+					//Cov=InvertMatrix(ATA);
+					//e=Cov*ATD;
+					e = ATA.jacobiSvd(ComputeThinU | ComputeThinV).solve(ATD);
+					//e=SolveSVD(ATA,ATD);
+					IsOutBounds = false;
+					PrevChiSqr = ChiSqr;
+					Mult = 1.0;
+					do
+					{
+						for (k = 0; k<n; k++)
+						{
+							ModelArgs[(int)Solver.obj.Model.FitParmIndexes.Val[k] - 1] = V(k) + Mult*e(k);
+							while ((ModelArgs[(int)Solver.obj.Model.FitParmIndexes.Val[k] - 1] > Solver.obj.Model.HiBounds((int)Solver.obj.Model.FitParmIndexes.Val[k] - 1)) || (ModelArgs[(int)Solver.obj.Model.FitParmIndexes.Val[k] - 1] < Solver.obj.Model.LowBounds((int)Solver.obj.Model.FitParmIndexes.Val[k] - 1)))
+							{
+								// This loops finds the correct scale factor (Mult) to apply to the entire vector
+								Mult *= ScaleFact;
+								ModelArgs[(int)Solver.obj.Model.FitParmIndexes.Val[k] - 1] = V(k) + Mult*e(k);
+								IsOutBounds = true;
+							}
+							if (IsOutBounds && k>0)
+							{
+								// This loop applies the scaling factor to the rest of the vector.
+								for (j = 0; j < k; j++)
+									ModelArgs[(int)Solver.obj.Model.FitParmIndexes.Val[j] - 1] = V(j) + Mult*e(j);
+								IsOutBounds = false;
+							}
+						}
+						if (Solver.obj.Model.FitParmIndexes.isUZtime == true)
+						{
+							for (j = 0; j<Solver.obj.Tracer.Tracers.size(); j++)
+							{
+								if (Solver.obj.Tracer.UZtimeCond[j] == 1)
+									Solver.obj.Tracer.UZtime(j) = ModelArgs[0];
+							}
+						}
+						ChiSqr = 0;
+						InitTracerOutput = Solver.LPM_TracerOutput(ModelArgs[1], ModelArgs[2], ModelArgs[3],
+							ModelArgs[4], ModelArgs[5], ModelArgs[6], ModelArgs[7], lxDIC_1->val.num, lxDIC_2->val.num);
+#ifdef _DEBUG
+						_fprintf_p(stream, "%g", ModelArgs[0]);
+						_fprintf_p(stream, "%s", Delim);
+						_fprintf_p(stream, "%g", ModelArgs[1]);
+						_fprintf_p(stream, "%s", Delim);
+						_fprintf_p(stream, "%g", ModelArgs[2]);
+						_fprintf_p(stream, "%s", Delim);
+						_fprintf_p(stream, "%g", ModelArgs[3]);
+						_fprintf_p(stream, "%s", Delim);
+						_fprintf_p(stream, "%g", ModelArgs[4]);
+						_fprintf_p(stream, "%s", Delim);
+						_fprintf_p(stream, "%g", ModelArgs[5]);
+						_fprintf_p(stream, "%s", Delim);
+						_fprintf_p(stream, "%g", ModelArgs[6]);
+						_fprintf_p(stream, "%s", Delim);
+						_fprintf_p(stream, "%g", ModelArgs[7]);
+						_fprintf_p(stream, "%s\n", "");
+#endif
+						for (int j = 0; j<TracerNum; j++)
+						{
+							D(j) = (Solver.obj.Sample.MeasTracerConcs(j) - InitTracerOutput(j)) / Solver.obj.Sample.MeasSigmas(j);
+							ChiSqr += D(j)*D(j);
+#ifdef _DEBUG
+							_fprintf_p(stream, "%g", ChiSqr);
+							_fprintf_p(stream, "%s", Delim);
+							_fprintf_p(stream, "%g\n", InitTracerOutput(j));
+#endif
+						}
+						ChiSqrDiff = ChiSqr - PrevChiSqr;
+						Mult *= ScaleFact;
+					} while (ChiSqrDiff > 0 && Mult > Tol && !IsSolveLM);
+					Mult /= ScaleFact;
+					e *= Mult;
+					//if (nIters>4)
+					PrevNormV = NormV;
+					NormV = e.norm();
+					//V = sS;
+					for (i = 0; i<n; i++)
+						V(i) = ModelArgs[(int)Solver.obj.Model.FitParmIndexes.Val[i] - 1];
+					NormV_Diff = (double)abs(PrevNormV - NormV);
+				} while (NormV > Tol && NormV_Diff > Tol && nIters < 200);
+				//Output begins here
+				if (SimCnt == 0)
+				{
+					Cov = InvertMatrix(ATA);
+					for (i = 0; i<(2 * n); i += 2)
+					{
+						xOpArray[i].xltype = xltypeNum;
+						xOpArray[i].val.num = V(i / 2);
+						xOpArray[i + 1].xltype = xltypeNum;
+						xOpArray[i + 1].val.num = sqrt(Cov(i / 2, i / 2));
+					}
+
+					xOpArray[2 * n].xltype = xltypeNum;
+					xOpArray[2 * n].val.num = ChiSqr;
+
+					DoF = (double)TracerNum - n;  //degrees of freedom
+												  //test = pdf(ChiSqrDist,ChiSqr);
+												  //test = 1-cdf(ChiSqrDist,ChiSqr);
+					xOpArray[2 * n + 1].xltype = xltypeNum;
+					if (DoF>0 && ChiSqr<100000)
+					{
+						boost::math::chi_squared_distribution<> ChiSqrDist(DoF);
+						xOpArray[2 * n + 1].val.num = 1 - cdf(ChiSqrDist, ChiSqr);
+					}
+					else
+					{
+						xOpArray[2 * n + 1].val.num = -99;
+					}
+
+					xOpArray[2 * n + 2].xltype = xltypeNum;
+					xOpArray[2 * n + 2].val.num = HiTracer;
+
+					xOpArray[2 * n + 3].xltype = xltypeNum;
+					xOpArray[2 * n + 3].val.num = HiChiSqr;
+
+					xOpArray[2 * n + 4].xltype = xltypeNum;
+					xOpArray[2 * n + 4].val.num = (double)nIters;
+
+					xOpArray[2 * n + 5].xltype = xltypeNum;
+					xOpArray[2 * n + 5].val.num = (std::clock() - start) / (double)CLOCKS_PER_SEC;
+
+					if (Solver.obj.Model.MonteCarlo.IsMonteCarlo == true)
+					{
+						GetHwnd(&g_hWndMain);
+						hwndPB = CreateProgressBase();
+						SendMessage(GetDlgItem(hwndPB, IDC_PROGBAR), PBM_SETRANGE32, 0, Solver.obj.Model.MonteCarlo.TotalSims);
+						ShowWindow(hwndPB, SW_SHOW);
+						UpdateWindow(hwndPB);
+						if (Solver.obj.Model.MonteCarlo.IsWriteOut == true)
+						{
+							//Write Header to File
+							char s[] = "SimNum, ";
+							char t[] = "OptParm, ";
+							char x[] = "OptParmErr, ";
+							_fprintf_p(MCout, "%s", s);
+							for (j = 0; j<n; j++) //Fit parameters
+							{
+								_fprintf_p(MCout, "%s", t);
+								_fprintf_p(MCout, "%s", x);
+							}
+							char u[] = "ChiSqr, ChiSqrProb, HiTracer, HiChiSqr, Iters, Time, ";
+							_fprintf_p(MCout, "%s", u);
+							char v[] = "ModConcs, ";
+							for (int j = 0; j<TracerNum; j++) //Modeled Tracer Concentrations
+							{
+								_fprintf_p(MCout, "%s", v);
+							}
+							char w[] = "SimConcs, ";
+							for (int j = 0; j<TracerNum; j++) //Simulated Tracer Concentrations
+							{
+								_fprintf_p(MCout, "%s", w);
+							}
+							_fprintf_p(MCout, "%s\n", "");
+						}
+					}
+				}
+				else if (Solver.obj.Model.MonteCarlo.IsWriteOut == true)
+				{
+					//Write Results to File
+					for (j = 0; j<n; j++) //Fit parameters
+						Solver.obj.Model.MonteCarlo.MonteResults(SimCnt - 1, j) = V(j);
+					_fprintf_p(MCout, "%d", SimCnt);
+					_fprintf_p(MCout, "%s", Delim);
+					Cov = InvertMatrix(ATA);
+					for (i = 0; i<(2 * n); i += 2)
+					{
+						_fprintf_p(MCout, "%g", V(i / 2));
+						_fprintf_p(MCout, "%s", Delim);
+						_fprintf_p(MCout, "%g", sqrt(Cov(i / 2, i / 2)));
+						_fprintf_p(MCout, "%s", Delim);
+					}
+					_fprintf_p(MCout, "%g", ChiSqr);
+					_fprintf_p(MCout, "%s", Delim);
+
+					DoF = (double)TracerNum - n;  //degrees of freedom
+					if (DoF>0 && ChiSqr<100000)
+					{
+						boost::math::chi_squared_distribution<> ChiSqrDist(DoF);
+						_fprintf_p(MCout, "%g", 1 - cdf(ChiSqrDist, ChiSqr));
+					}
+					else
+					{
+						_fprintf_p(MCout, "%g", (double)-99);
+					}
+					_fprintf_p(MCout, "%s", Delim);
+
+					_fprintf_p(MCout, "%g", (double)HiTracer);
+					_fprintf_p(MCout, "%s", Delim);
+
+					_fprintf_p(MCout, "%g", HiChiSqr);
+					_fprintf_p(MCout, "%s", Delim);
+
+					_fprintf_p(MCout, "%g", (double)nIters);
+					_fprintf_p(MCout, "%s", Delim);
+
+					_fprintf_p(MCout, "%g", (std::clock() - start) / (double)CLOCKS_PER_SEC);
+					_fprintf_p(MCout, "%s", Delim);
+					for (int j = 0; j<TracerNum; j++) //Modeled Tracer Concentrations
+					{
+						Solver.obj.Model.MonteCarlo.MonteResults(SimCnt - 1, j + n) = InitTracerOutput(j);
+						_fprintf_p(MCout, "%g", InitTracerOutput(j));
+						_fprintf_p(MCout, "%s", Delim);
+					}
+					for (int j = 0; j<TracerNum; j++) //Simulated Tracer Concentrations
+					{
+						_fprintf_p(MCout, "%g", Solver.obj.Sample.MeasTracerConcs(j));
+						_fprintf_p(MCout, "%s", Delim);
+					}
+					_fprintf_p(MCout, "%s\n", "");
+				}
+				else
+				{
+					for (j = 0; j<n; j++) //Fit parameters
+					{
+						Solver.obj.Model.MonteCarlo.MonteResults(SimCnt - 1, j) = V(j);
+#ifdef _DEBUG
+						_fprintf_p(stream, "%g", V(j));
+						_fprintf_p(stream, "%s", Delim);
+#endif
+					}
+					for (int j = 0; j<TracerNum; j++) //Modeled Tracer Concentrations
+						Solver.obj.Model.MonteCarlo.MonteResults(SimCnt - 1, j + n) = InitTracerOutput(j);
+#ifdef _DEBUG
+					_fprintf_p(stream, "%s\n", "");
+#endif
+				}
+
+				//Start Monte Carlo Simulations
+				if (Solver.obj.Model.MonteCarlo.IsMonteCarlo == true && SimCnt<Solver.obj.Model.MonteCarlo.TotalSims)
+				{
+					ChiSqr = 0;
+					PrevChiSqr = 0;
+					for (int j = 0; j<TracerNum; j++)
+					{
+						Solver.obj.Sample.MeasTracerConcs(j) = Solver.obj.Model.MonteCarlo.SimulatedConcs(SimCnt, j);
+						D(j) = (Solver.obj.Sample.MeasTracerConcs(j) - InitTracerOutput(j)) / Solver.obj.Sample.MeasSigmas(j);
+						ChiSqr += D(j)*D(j);
+#ifdef _DEBUG
+						_fprintf_p(stream, "%s", Delim);
+						_fprintf_p(stream, "%g\n", Solver.obj.Model.MonteCarlo.SimulatedConcs(SimCnt, j));
+#endif
+					}
+					for (j = 0; j<8; j++)
+						ModelArgs[j] = test = Solver.obj.Model.InitModVals(j);
+#ifdef _DEBUG
+					_fprintf_p(stream, "%s", Delim);
+					_fprintf_p(stream, "%g\n", ChiSqr);
+#endif
+					//SendMessage(hwndPB, PBM_STEPIT, 0, 0);
+					SendMessage(GetDlgItem(hwndPB, IDC_PROGBAR), PBM_STEPIT, 0, 0);
+					UpdateWindow(hwndPB);
+					SimCnt++;
+				}
+				else if (Solver.obj.Model.MonteCarlo.IsMonteCarlo)
+					SimCnt++;
+			} while (Solver.obj.Model.MonteCarlo.IsMonteCarlo == true && SimCnt <= Solver.obj.Model.MonteCarlo.TotalSims);
+			if (Solver.obj.Model.MonteCarlo.IsMonteCarlo == true)
+			{
+				xOpArray[2 * n + 6].xltype = xltypeNum;
+				xOpArray[2 * n + 6].val.num = (std::clock() - start) / (double)CLOCKS_PER_SEC;
+				VectorXd StatVec = VectorXd::Zero(Solver.obj.Model.MonteCarlo.TotalSims);
+				j = 2 * (n + TracerNum);
+				SimCnt = 0;
+				while (j>0)
+				{
+					StatVec = Solver.obj.Model.MonteCarlo.MonteResults.block(0, SimCnt, Solver.obj.Model.MonteCarlo.TotalSims, 1);
+					Mean = StatVec.mean();
+					for (int i = 0; i<Solver.obj.Model.MonteCarlo.TotalSims; i++)
+						StatVec(i) = pow(Solver.obj.Model.MonteCarlo.MonteResults(i, SimCnt) - Mean, 2);
+					StdDev = sqrt(StatVec.sum() / Solver.obj.Model.MonteCarlo.TotalSims);
+					xOpArray[4 * n + 7 + (2 * TracerNum) - j].xltype = xltypeNum;
+					xOpArray[4 * n + 7 + (2 * TracerNum) - j].val.num = Mean;
+					xOpArray[4 * n + 7 + (2 * TracerNum) - j + 1].xltype = xltypeNum;
+					xOpArray[4 * n + 7 + (2 * TracerNum) - j + 1].val.num = StdDev;
+					j += -2;
+					SimCnt++;
+				}
+				UnhookExcelWindow(g_hWndMain);
+				Excel12f(xlDisableXLMsgs, 0, 0);
+				DestroyWindow(hwndPB);
+				if (Solver.obj.Model.MonteCarlo.IsWriteOut == true)
+				{
+					fclose(MCout);
+				}
+			}
+			// Create an array of pointers to XLOPER12 values.
+			LPXLOPER12 xArray = (LPXLOPER12)malloc(size * sizeof(LPXLOPER12));
+			xArray->xltype = xltypeMulti | xlbitDLLFree;
+			xArray->val.array.columns = 1;
+			xArray->val.array.rows = size;
+			xArray->val.array.lparray = xOpArray;
+
+#ifdef _DEBUG
+			LPXLOPER12 px;
+			_fprintf_p(stream, "%s\n", "");
+			for (i = 0; i<2 * n + 6; i++)
+			{
+				px = xArray->val.array.lparray + i;
+				_fprintf_p(stream, "%g\n", px->val.num);
+				//_fprintf_p( stream, "%s", Delim );
+			}
+			fclose(stream);
+#endif
+			return xArray;
+		}
+		else
+		{
+			xMulti[0].val.num = 0;
+			xMulti[0].xltype = xltypeNum;
+			return (LPXLOPER12)&xMulti[0];
+		}
+}
+
+
+__declspec(dllexport) LPXLOPER12 WINAPI SolveLevenbergMarquardt(LPXLOPER12 lxMeasTracerConcs, LPXLOPER12 lxMeasSigmas,
+	LPXLOPER12 lxSampleDates, int ModelNum, LPXLOPER12 lxFitParmIndexes, LPXLOPER12 lxInitModVals,
+	LPXLOPER12 lxLowBounds, LPXLOPER12 lxHiBounds, LPXLOPER12 lxTracers, FP lxdateRange[], LPXLOPER12 lxTracerInputRange,
+	LPXLOPER12 lxLambda, LPXLOPER12 lxuzTime, LPXLOPER12 lxUZtimeCond, LPXLOPER12 lxTracerComp_2, LPXLOPER12 lxDIC_1, LPXLOPER12 lxDIC_2, double Uppm, double THppm,
+	double Porosity, double SedDensity, double He4SolnRate, LPXLOPER12 lxIsMonteCarlo, int iTotalSims, LPXLOPER12 lxIsWriteOut, LPXLOPER12 lxOutFile)
+{
+	std::clock_t start;
+	start = std::clock();
+
+	double HiChiSqr = 0, ChiSqr = 0, PrevChiSqr = 0, Tol, PrevNormV, NormV = 100., NormV_Diff = 100., ScaleFact = 0.4, Mult = 1;
+	double ModelArgs[10] = { 0,0,0,0,0,0,0,0,0,0 }, DoF, test, dLevFactor, dLambda, dAlpha, ChiSqrDiff, Mean, StdDev, BestChiSqr, eps;
+	int nIters = 0, k, j, i, HiTracer, n, TracerNum = 0, SimCnt = 0, size, MaxIters;
+	MatrixXd LJo, InitTracerOutput, LPnum, Result, ATA, ATD, Jo, JoT, Cov;
+	VectorXd D, e, sS, V, BestVals;
+	bool IsScale, IsOutBounds;
+	XLOPER12 xMulti[1];
+	HWND hwndPB;
+	FILE    *MCout = NULL;
+	char    Delim[3] = ", ";
+
+#ifdef _DEBUG
+	if (fopen_s(&stream, "TracerOutput.txt", "w") == 0)
+#endif
+
+	if (lxMeasTracerConcs->val.array.columns*lxMeasTracerConcs->val.array.rows >= 1 && lxdateRange->rows>1 && lxTracerInputRange->val.array.columns*lxTracerInputRange->val.array.rows>1 && lxLambda->xltype == lxuzTime->xltype && lxuzTime->xltype == lxTracers->xltype)
+	{
+
+		LPM Solver(ModelNum, lxMeasTracerConcs, lxFitParmIndexes, lxInitModVals, lxTracers, lxdateRange, lxTracerInputRange, lxLambda, lxSampleDates,
+			lxuzTime, lxUZtimeCond, lxMeasSigmas, lxHiBounds, lxLowBounds, lxTracerComp_2, Uppm, THppm, Porosity, SedDensity, He4SolnRate, lxIsMonteCarlo, iTotalSims, lxIsWriteOut);
+
+		n = Solver.obj.Model.FitParmIndexes.Val.size();
+		TracerNum = Solver.obj.Sample.ActiveVals.sum();
+		if (Solver.obj.Model.MonteCarlo.IsMonteCarlo == true)
+		{
+			size = 4 * n + 7 + (2 * TracerNum);
+			if (Solver.obj.Model.MonteCarlo.IsWriteOut == true)
+			{
+				wchar_t *FileName = deep_copy_wcs(lxOutFile->val.str);
+				if (_wfopen_s(&MCout, FileName, L"w") == 0); //Need to add error trap here in case file doesn't open
+				else
+				{
+					char FileName[] = "MonteCarloOut.txt";
+					if (fopen_s(&MCout, FileName, "w") == 0);
+					else
+					{
+						printf("The monte carlo output file could not be opened...aborting\n");
 						//abort function
 					}
 				}
@@ -300,392 +778,491 @@ __declspec(dllexport) LPXLOPER12 WINAPI SolveNewtonMethod(LPXLOPER12 lxMeasTrace
 			}
 		}
 		else
-			size = 2*n+6;
+			size = 2 * n + 6;
 		// Create an array of XLOPER12 values.
 		XLOPER12 *xOpArray = (XLOPER12 *)malloc(size * sizeof(XLOPER12));
-		for(i = 0; i < size; i++) 
+		for (i = 0; i < size; i++)
 		{
 			xOpArray[i].xltype = xltypeNum;
 			xOpArray[i].val.w = -99;
 		}
-
-		LJo.resize(TracerNum,1);
-		Jo.resize(TracerNum,n);
-		JoT.resize(n,TracerNum);
+		// Create eigen matrices and vectors
+		LJo.resize(TracerNum, 1);
+		Jo.resize(TracerNum, n);
+		JoT.resize(n, TracerNum);
 		D.resize(TracerNum);
 
 		sS.resize(n);
 		V.resize(n);
+		BestVals.resize(n);
 
-		for (j=0; j<8;j++)
+		for (j = 0; j<8; j++)
 			ModelArgs[j] = test = Solver.obj.Model.InitModVals(j);
-		for (j=0;j<n;j++)
- 			V(j) = ModelArgs[Solver.obj.Model.FitParmIndexes.Val[j]-1];
-		if(Solver.obj.Model.FitParmIndexes.isUZtime==true)
+		for (j = 0; j<n; j++)
+			V(j) = ModelArgs[Solver.obj.Model.FitParmIndexes.Val[j] - 1];
+		if (Solver.obj.Model.FitParmIndexes.isUZtime == true)
 		{
-			for(j=0;j<Solver.obj.Tracer.Tracers.size();j++)
+			for (i = 0; i<Solver.obj.Tracer.Tracers.size(); i++)
 			{
-				if(Solver.obj.Tracer.UZtimeCond[j]==1)
-					Solver.obj.Tracer.UZtime(j)=ModelArgs[0];
+				if (Solver.obj.Tracer.UZtimeCond[i] == 1)
+					Solver.obj.Tracer.UZtime(i) = ModelArgs[0];
 			}
 		}
 
-		InitTracerOutput=Solver.LPM_TracerOutput(ModelArgs[1],ModelArgs[2],ModelArgs[3],
-					ModelArgs[4],ModelArgs[5],ModelArgs[6],ModelArgs[7],lxDIC_1->val.num,lxDIC_2->val.num);
-	
-		#ifdef _DEBUG
-			_fprintf_p( stream, "%g", ModelArgs[0] );	
-			_fprintf_p( stream, "%s", Delim );
-			_fprintf_p( stream, "%g", ModelArgs[1] );
-			_fprintf_p( stream, "%s", Delim );
-			_fprintf_p( stream, "%g", ModelArgs[2] );	
-			_fprintf_p( stream, "%s", Delim );
-			_fprintf_p( stream, "%g", ModelArgs[3] );
-			_fprintf_p( stream, "%s", Delim );
-			_fprintf_p( stream, "%g", ModelArgs[4] );
-			_fprintf_p( stream, "%s", Delim );
-			_fprintf_p( stream, "%g", ModelArgs[5] );	
-			_fprintf_p( stream, "%s", Delim );
-			_fprintf_p( stream, "%g", ModelArgs[6] );
-			_fprintf_p( stream, "%s", Delim );
-			_fprintf_p( stream, "%g", ModelArgs[7] );
-			_fprintf_p( stream, "%s\n", "" );
-		#endif
-		for(j=0;j<TracerNum;j++)
+		InitTracerOutput = Solver.LPM_TracerOutput(ModelArgs[1], ModelArgs[2], ModelArgs[3],
+			ModelArgs[4], ModelArgs[5], ModelArgs[6], ModelArgs[7], lxDIC_1->val.num, lxDIC_2->val.num);
+
+#ifdef _DEBUG
+		_fprintf_p(stream, "%g", ModelArgs[0]);
+		_fprintf_p(stream, "%s", Delim);
+		_fprintf_p(stream, "%g", ModelArgs[1]);
+		_fprintf_p(stream, "%s", Delim);
+		_fprintf_p(stream, "%g", ModelArgs[2]);
+		_fprintf_p(stream, "%s", Delim);
+		_fprintf_p(stream, "%g", ModelArgs[3]);
+		_fprintf_p(stream, "%s", Delim);
+		_fprintf_p(stream, "%g", ModelArgs[4]);
+		_fprintf_p(stream, "%s", Delim);
+		_fprintf_p(stream, "%g", ModelArgs[5]);
+		_fprintf_p(stream, "%s", Delim);
+		_fprintf_p(stream, "%g", ModelArgs[6]);
+		_fprintf_p(stream, "%s", Delim);
+		_fprintf_p(stream, "%g", ModelArgs[7]);
+		_fprintf_p(stream, "%s\n", "");
+#endif
+		for (i = 0; i<TracerNum; i++)
 		{
-			D(j)=(Solver.obj.Sample.MeasTracerConcs(j)-InitTracerOutput(j))/Solver.obj.Sample.MeasSigmas(j);
-			ChiSqr += D(j)*D(j);
-			#ifdef _DEBUG
-			_fprintf_p(stream, "%g", ChiSqr); 
-			_fprintf_p( stream, "%s", Delim );
-				_fprintf_p( stream, "%g\n", InitTracerOutput(j) );	
-			#endif
+			D(i) = (Solver.obj.Sample.MeasTracerConcs(i) - InitTracerOutput(i)) / Solver.obj.Sample.MeasSigmas(i);
+			ChiSqr += D(i)*D(i);
+#ifdef _DEBUG
+			_fprintf_p(stream, "%g", ChiSqr);
+			_fprintf_p(stream, "%s", Delim);
+			_fprintf_p(stream, "%g\n", InitTracerOutput(i));
+#endif
 		}
-		ID=MatrixXd::Identity(JoT.rows(),Jo.cols());
+		eps = std::numeric_limits<double>::epsilon();
 		do
 		{
 			Tol = 0.0001;
+			MaxIters = 50;
 			NormV = 100;
 			PrevNormV = 101;
 			NormV_Diff = 100;
 			nIters = 0;
 			ScaleFact = 0.5;
-			IsSolveLM = false;
-			Lambda2=100;
+			dLevFactor = 1;
+			dLambda = 1;
+			BestChiSqr = ChiSqr * 2;
 			do
 			{
-				HiChiSqr=0;
+				HiChiSqr = 0;
 				nIters++;
-				for(j=0;j<n;j++)
+				for (j = 0; j < n; j++)
 				{
-					LJo=Solver.d_dx_LPM_Model(ModelArgs[1],ModelArgs[2],ModelArgs[3],
-						ModelArgs[4],ModelArgs[5],ModelArgs[6],ModelArgs[7],lxDIC_1->val.num,lxDIC_2->val.num,Solver.obj.Model.FitParmIndexes.Val[j]);
-			
-					for(i=0;i<TracerNum;i++)
+					LJo = Solver.d_dx_LPM_Model(ModelArgs[1], ModelArgs[2], ModelArgs[3],
+						ModelArgs[4], ModelArgs[5], ModelArgs[6], ModelArgs[7], lxDIC_1->val.num, lxDIC_2->val.num, Solver.obj.Model.FitParmIndexes.Val[j]);
+
+					for (i = 0; i < TracerNum; i++)
 					{
-						#ifdef _DEBUG
-							test=LJo(i);
-							_fprintf_p( stream, "%g", test );
-							_fprintf_p( stream, "%s", Delim );
-						#endif
-						Jo(i,j)=JoT(j,i)= LJo(i)/Solver.obj.Sample.MeasSigmas(i);
-						if(D(i)*D(i) > HiChiSqr)
+#ifdef _DEBUG
+						test = LJo(i);
+						_fprintf_p(stream, "%g", test);
+						_fprintf_p(stream, "%s", Delim);
+#endif
+						Jo(i, j) = JoT(j, i) = LJo(i) / Solver.obj.Sample.MeasSigmas(i);
+						if (D(i)*D(i) > HiChiSqr)
 						{
 							HiChiSqr = D(i)*D(i);
 							HiTracer = i;
 						}
 					}
-					#ifdef _DEBUG
-						_fprintf_p( stream, "%s\n", "" );
-					#endif
+#ifdef _DEBUG
+					_fprintf_p(stream, "%s\n", "");
+#endif
 				}
-				ATA=JoT*Jo;
-				if(Lambda2<2)
-						IsSolveLM=false;
-				if(IsSolveLM)
+				ATA = JoT * Jo;
+				for (j = 0; j < n; j++)
 				{
-					if(ChiSqr>PrevChiSqr)
-						Lambda2*=2;
-					else
-						Lambda2/=2;
-					ID.diagonal(0)=Lambda2*ATA.diagonal(0);
-					ATA+=ID;
+					ATA(j, j) += dLevFactor;
 				}
-				ATD=JoT*D;
-				//Cov=InvertMatrix(ATA);
-				//e=Cov*ATD;
-				e=ATA.jacobiSvd(ComputeThinU | ComputeThinV).solve(ATD);
-				//e=SolveSVD(ATA,ATD);
-				IsOutBounds = false;
-				PrevChiSqr=ChiSqr;
+				ATD = JoT*D;
+				e = ATA.jacobiSvd(ComputeThinU | ComputeThinV).solve(ATD);
+				PrevChiSqr = ChiSqr;
 				Mult = 1.0;
+				dAlpha = 1.0;
+				IsOutBounds = false;
+				for (j = 0; j < n; j++)
+				{
+					if (Solver.obj.Model.HiBounds((int)Solver.obj.Model.FitParmIndexes.Val[j] - 1) - V(j) - Tol < e(j))
+					{
+						e(j) = (1 - dLambda / 10)*(Solver.obj.Model.HiBounds((int)Solver.obj.Model.FitParmIndexes.Val[j] - 1) - V(j) - Tol);
+						dLambda *= ScaleFact;
+						IsOutBounds = true;
+					}
+					else if (e(j) < Solver.obj.Model.LowBounds((int)Solver.obj.Model.FitParmIndexes.Val[j] - 1) - V(j) + Tol)
+					{
+						e(j) = (1 - dLambda / 10)*(Solver.obj.Model.LowBounds((int)Solver.obj.Model.FitParmIndexes.Val[j] - 1) - V(j) + Tol);
+						dLambda *= ScaleFact;
+						IsOutBounds = true;
+					}
+				}
+				IsScale = true;
 				do
 				{
-					for (k = 0; k<n; k++)
+					for (k = 0; k < n; k++)
 					{
-						ModelArgs[(int)Solver.obj.Model.FitParmIndexes.Val[k] - 1] = V(k) + Mult*e(k);
-						while ((ModelArgs[(int)Solver.obj.Model.FitParmIndexes.Val[k] - 1] > Solver.obj.Model.HiBounds((int)Solver.obj.Model.FitParmIndexes.Val[k] - 1)) || (ModelArgs[(int)Solver.obj.Model.FitParmIndexes.Val[k] - 1] < Solver.obj.Model.LowBounds((int)Solver.obj.Model.FitParmIndexes.Val[k] - 1)))
+						ModelArgs[(int)Solver.obj.Model.FitParmIndexes.Val[k] - 1] = V(k) + dAlpha*e(k);
+					}
+					if (Solver.obj.Model.FitParmIndexes.isUZtime == true)
+					{
+						for (j = 0; j < Solver.obj.Tracer.Tracers.size(); j++)
 						{
-							// This loops finds the correct scale factor (Mult) to apply to the entire vector
-							Mult *= ScaleFact;
-							ModelArgs[(int)Solver.obj.Model.FitParmIndexes.Val[k] - 1] = V(k) + Mult*e(k);
-							IsOutBounds = true;
-						}
-						if (IsOutBounds && k>0)
-						{
-							// This loop applies the scaling factor to the rest of the vector.
-							for (j = 0; j < k; j++)
-								ModelArgs[(int)Solver.obj.Model.FitParmIndexes.Val[k] - 1] = V(k) + Mult*e(k);
-							IsOutBounds = false;
+							if (Solver.obj.Tracer.UZtimeCond[j] == 1)
+								Solver.obj.Tracer.UZtime(j) = ModelArgs[0];
 						}
 					}
-					if(Solver.obj.Model.FitParmIndexes.isUZtime==true)
+					ChiSqr = 0;
+					InitTracerOutput = Solver.LPM_TracerOutput(ModelArgs[1], ModelArgs[2], ModelArgs[3],
+						ModelArgs[4], ModelArgs[5], ModelArgs[6], ModelArgs[7], lxDIC_1->val.num, lxDIC_2->val.num);
+#ifdef _DEBUG
+					_fprintf_p(stream, "%g", ModelArgs[0]);
+					_fprintf_p(stream, "%s", Delim);
+					_fprintf_p(stream, "%g", ModelArgs[1]);
+					_fprintf_p(stream, "%s", Delim);
+					_fprintf_p(stream, "%g", ModelArgs[2]);
+					_fprintf_p(stream, "%s", Delim);
+					_fprintf_p(stream, "%g", ModelArgs[3]);
+					_fprintf_p(stream, "%s", Delim);
+					_fprintf_p(stream, "%g", ModelArgs[4]);
+					_fprintf_p(stream, "%s", Delim);
+					_fprintf_p(stream, "%g", ModelArgs[5]);
+					_fprintf_p(stream, "%s", Delim);
+					_fprintf_p(stream, "%g", ModelArgs[6]);
+					_fprintf_p(stream, "%s", Delim);
+					_fprintf_p(stream, "%g", ModelArgs[7]);
+					_fprintf_p(stream, "%s\n", "");
+#endif
+					for (int j = 0; j < TracerNum; j++)
 					{
-						for(j=0;j<Solver.obj.Tracer.Tracers.size();j++)
-						{
-							if(Solver.obj.Tracer.UZtimeCond[j]==1)
-								Solver.obj.Tracer.UZtime(j)=ModelArgs[0];
-						}
-					}
-					ChiSqr=0;
-					InitTracerOutput=Solver.LPM_TracerOutput(ModelArgs[1],ModelArgs[2],ModelArgs[3],
-						ModelArgs[4],ModelArgs[5],ModelArgs[6],ModelArgs[7],lxDIC_1->val.num,lxDIC_2->val.num);
-					#ifdef _DEBUG
-						_fprintf_p( stream, "%g", ModelArgs[0] );	
-						_fprintf_p( stream, "%s", Delim );
-						_fprintf_p( stream, "%g", ModelArgs[1] );
-						_fprintf_p( stream, "%s", Delim );
-						_fprintf_p( stream, "%g", ModelArgs[2] );	
-						_fprintf_p( stream, "%s", Delim );
-						_fprintf_p( stream, "%g", ModelArgs[3] );
-						_fprintf_p( stream, "%s", Delim );
-						_fprintf_p( stream, "%g", ModelArgs[4] );
-						_fprintf_p( stream, "%s", Delim );
-						_fprintf_p( stream, "%g", ModelArgs[5] );	
-						_fprintf_p( stream, "%s", Delim );
-						_fprintf_p( stream, "%g", ModelArgs[6] );
-						_fprintf_p( stream, "%s", Delim );
-						_fprintf_p( stream, "%g", ModelArgs[7] );
-						_fprintf_p( stream, "%s\n", "" );
-					#endif
-					for(int j=0;j<TracerNum;j++)
-					{
-						D(j)=(Solver.obj.Sample.MeasTracerConcs(j)-InitTracerOutput(j))/Solver.obj.Sample.MeasSigmas(j);
+						D(j) = (Solver.obj.Sample.MeasTracerConcs(j) - InitTracerOutput(j)) / Solver.obj.Sample.MeasSigmas(j);
 						ChiSqr += D(j)*D(j);
-						#ifdef _DEBUG
-							_fprintf_p(stream, "%g", ChiSqr);
-							_fprintf_p( stream, "%s", Delim );
-							_fprintf_p( stream, "%g\n", InitTracerOutput(j) );	
-						#endif
+#ifdef _DEBUG
+						_fprintf_p(stream, "%g", ChiSqr);
+						_fprintf_p(stream, "%s", Delim);
+						_fprintf_p(stream, "%g\n", InitTracerOutput(j));
+#endif
 					}
-					ChiSqrDiff = ChiSqr-PrevChiSqr;
-					Mult *= ScaleFact;
-				} while (ChiSqrDiff > 0 && Mult > Tol && !IsSolveLM);
-				Mult/=ScaleFact;
-				e*=Mult;
-				//if (nIters>4)
-				PrevNormV = NormV;
-				NormV=e.squaredNorm();
-				//V = sS;
-				for (i = 0; i<n; i++)
-					V(i) = ModelArgs[(int)Solver.obj.Model.FitParmIndexes.Val[i] - 1];
-				NormV_Diff=(double)abs(PrevNormV-NormV);
-			}while (NormV_Diff > Tol && nIters < 200);
-			//Output begins here
-			if (SimCnt==0)
-			{	
-				Cov=InvertMatrix(ATA);
-				for(i=0;i<(2*n);i+=2)
-				{
-					xOpArray[i].xltype=xltypeNum;
-					xOpArray[i].val.num=V(i/2);
-					xOpArray[i+1].xltype=xltypeNum;
-					xOpArray[i+1].val.num=sqrt(Cov(i/2,i/2));
-				}
-
-				xOpArray[2*n].xltype=xltypeNum;
-				xOpArray[2*n].val.num=ChiSqr;
-	
-				DoF=(double)TracerNum-n;  //degrees of freedom
-				//test = pdf(ChiSqrDist,ChiSqr);
-				//test = 1-cdf(ChiSqrDist,ChiSqr);
-				xOpArray[2*n+1].xltype=xltypeNum;
-				if(DoF>0 && ChiSqr<100000)
-				{
-					boost::math::chi_squared_distribution<> ChiSqrDist(DoF);
-					xOpArray[2*n+1].val.num=1-cdf(ChiSqrDist,ChiSqr);
-				}
-				else
-				{
-					xOpArray[2*n+1].val.num=-99;
-				}
-
-				xOpArray[2*n+2].xltype=xltypeNum;
-				xOpArray[2*n+2].val.num=HiTracer;
-	
-				xOpArray[2*n+3].xltype=xltypeNum;
-				xOpArray[2*n+3].val.num=HiChiSqr;
-
-				xOpArray[2*n+4].xltype=xltypeNum;
-				xOpArray[2*n+4].val.num=(double)nIters;
-
-				xOpArray[2*n+5].xltype=xltypeNum;
-				xOpArray[2*n+5].val.num=(std::clock()-start)/(double)CLOCKS_PER_SEC;	
-
-				if (Solver.obj.Model.MonteCarlo.IsMonteCarlo==true)
-				{
-					GetHwnd(&g_hWndMain);
-					hwndPB = CreateProgressBase();
-					SendMessage(GetDlgItem(hwndPB,IDC_PROGBAR),PBM_SETRANGE32,0,Solver.obj.Model.MonteCarlo.TotalSims);
-					ShowWindow(hwndPB, SW_SHOW);
-					UpdateWindow(hwndPB);
-					if (Solver.obj.Model.MonteCarlo.IsWriteOut == true)
+					if (IsScale)
 					{
-						//Write Header to File
-						char s[]="SimNum, ";
-						char t[]="OptParm, ";
-						char x[]="OptParmErr, ";
-						_fprintf_p( MCout, "%s", s );
-						for(j=0;j<n;j++) //Fit parameters
-						{
-							_fprintf_p( MCout, "%s", t );
-							_fprintf_p( MCout, "%s", x );
-						}
-						char u[]="ChiSqr, ChiSqrProb, HiTracer, HiChiSqr, Iters, Time, ";
-						_fprintf_p( MCout, "%s", u );
-						char v[]="ModConcs, ";
-						for(int j=0;j<TracerNum;j++) //Modeled Tracer Concentrations
-						{
-							_fprintf_p( MCout, "%s", v );
-						}
-						char w[]="SimConcs, ";
-						for(int j=0;j<TracerNum;j++) //Simulated Tracer Concentrations
-						{
-							_fprintf_p( MCout, "%s", w );
-						}
-						_fprintf_p( MCout, "%s\n", "" );
+						dAlpha = ScaleFact*Mult;
+						Mult *= ScaleFact;
+						IsScale = false;
 					}
-				}
-			}
-			else if (Solver.obj.Model.MonteCarlo.IsWriteOut == true)
-			{
-				//Write Results to File
-				for(j=0;j<n;j++) //Fit parameters
-					Solver.obj.Model.MonteCarlo.MonteResults(SimCnt-1,j)=V(j);
-				_fprintf_p( MCout, "%d", SimCnt );
-				_fprintf_p( MCout, "%s", Delim );
-				Cov=InvertMatrix(ATA);
-				for(i=0;i<(2*n);i+=2)
+					else
+					{
+						dAlpha = 1.0 - ScaleFact*Mult;
+						IsScale = true;
+					}
+					ChiSqrDiff = ChiSqr - PrevChiSqr;
+				} while (ChiSqrDiff > 0.0 && Mult > Tol);
+				if (ChiSqrDiff > 0.0 || ChiSqr < BestChiSqr || IsOutBounds == false)
 				{
-					_fprintf_p( MCout, "%g", V(i/2) );
-					_fprintf_p( MCout, "%s", Delim );
-					_fprintf_p( MCout, "%g", sqrt(Cov(i/2,i/2)));
-					_fprintf_p( MCout, "%s", Delim );
+					Mult /= ScaleFact;
+					if (IsScale || Mult < 1.0)
+					{
+						if (IsScale)
+							dAlpha = ScaleFact*Mult;
+						else
+							dAlpha = 1.0 - ScaleFact*Mult;
+					}
+					else
+					{
+						dAlpha = Mult;
+					}
+					e *= dAlpha;
+					PrevNormV = NormV;
+					NormV = e.norm();
+					for (i = 0; i < n; i++)
+						V(i) = ModelArgs[(int)Solver.obj.Model.FitParmIndexes.Val[i] - 1];
+					NormV_Diff = (double)abs(PrevNormV - NormV);
+					if (ChiSqr < BestChiSqr)
+					{
+						BestChiSqr = ChiSqr;
+						BestVals = V;
+					}
+					if (dLambda < 1.0)
+						dLambda /= ScaleFact;
+					dLevFactor /= 10;
 				}
-				_fprintf_p( MCout, "%g", ChiSqr );
-				_fprintf_p( MCout, "%s", Delim );
-	
-				DoF=(double)TracerNum-n;  //degrees of freedom
-				if(DoF>0 && ChiSqr<100000)
+				else if (ChiSqrDiff > 0.0 && nIters < MaxIters - 1 && IsOutBounds)
 				{
-					boost::math::chi_squared_distribution<> ChiSqrDist(DoF);
-					_fprintf_p( MCout, "%g", 1-cdf(ChiSqrDist,ChiSqr) );
+					//try backtracking
+					for (j = 0; j < n; j++)
+					{
+						if (e(j) > Solver.obj.Model.HiBounds((int)Solver.obj.Model.FitParmIndexes.Val[j] - 1) - V(j) - Tol)
+						{
+							//increasing
+							e(j) = 0.1*(Solver.obj.Model.LowBounds((int)Solver.obj.Model.FitParmIndexes.Val[j] - 1) - V(j));
+						}
+						else if (e(j) < Solver.obj.Model.LowBounds((int)Solver.obj.Model.FitParmIndexes.Val[j] - 1) - V(j) + Tol)
+						{
+							e(j) = 0.1*(Solver.obj.Model.HiBounds((int)Solver.obj.Model.FitParmIndexes.Val[j] - 1) - V(j));
+						}
+					}
+					V += e;
+					for (k = 0; k < n; k++)
+					{
+						ModelArgs[(int)Solver.obj.Model.FitParmIndexes.Val[k] - 1] = V(k);
+					}
+					if (Solver.obj.Model.FitParmIndexes.isUZtime == true)
+					{
+						for (j = 0; j < Solver.obj.Tracer.Tracers.size(); j++)
+						{
+							if (Solver.obj.Tracer.UZtimeCond[j] == 1)
+								Solver.obj.Tracer.UZtime(j) = ModelArgs[0];
+						}
+					}
+					ChiSqr = 0;
+					InitTracerOutput = Solver.LPM_TracerOutput(ModelArgs[1], ModelArgs[2], ModelArgs[3],
+						ModelArgs[4], ModelArgs[5], ModelArgs[6], ModelArgs[7], lxDIC_1->val.num, lxDIC_2->val.num);
+					for (int j = 0; j < TracerNum; j++)
+					{
+						D(j) = (Solver.obj.Sample.MeasTracerConcs(j) - InitTracerOutput(j)) / Solver.obj.Sample.MeasSigmas(j);
+						ChiSqr += D(j)*D(j);
+#ifdef _DEBUG
+						_fprintf_p(stream, "%g", ChiSqr);
+						_fprintf_p(stream, "%s", Delim);
+						_fprintf_p(stream, "%g\n", InitTracerOutput(j));
+#endif
+					}
+					dLevFactor *= 10;
+					dLambda = 1;
 				}
 				else
 				{
-					_fprintf_p( MCout, "%g", (double)-99 );
+					V = BestVals;
+					for (k = 0; k < n; k++)
+					{
+						ModelArgs[(int)Solver.obj.Model.FitParmIndexes.Val[k] - 1] = V(k);
+					}
+					if (Solver.obj.Model.FitParmIndexes.isUZtime == true)
+					{
+						for (j = 0; j < Solver.obj.Tracer.Tracers.size(); j++)
+						{
+							if (Solver.obj.Tracer.UZtimeCond[j] == 1)
+								Solver.obj.Tracer.UZtime(j) = ModelArgs[0];
+						}
+					}
+					ChiSqr = 0;
+					InitTracerOutput = Solver.LPM_TracerOutput(ModelArgs[1], ModelArgs[2], ModelArgs[3],
+						ModelArgs[4], ModelArgs[5], ModelArgs[6], ModelArgs[7], lxDIC_1->val.num, lxDIC_2->val.num);
+					for (int j = 0; j < TracerNum; j++)
+					{
+						D(j) = (Solver.obj.Sample.MeasTracerConcs(j) - InitTracerOutput(j)) / Solver.obj.Sample.MeasSigmas(j);
+						ChiSqr += D(j)*D(j);
+#ifdef _DEBUG
+						_fprintf_p(stream, "%g", ChiSqr);
+						_fprintf_p(stream, "%s", Delim);
+						_fprintf_p(stream, "%g\n", InitTracerOutput(j));
+#endif
+					}
 				}
-				_fprintf_p( MCout, "%s", Delim );
-						
-				_fprintf_p( MCout, "%g", (double)HiTracer );
-				_fprintf_p( MCout, "%s", Delim );
-	
-				_fprintf_p( MCout, "%g", HiChiSqr );
-				_fprintf_p( MCout, "%s", Delim );
+		} while (NormV > Tol && NormV_Diff > Tol && nIters < MaxIters);
+//Output begins here
+		if (SimCnt == 0)
+		{
+			Cov = InvertMatrix(ATA);
+			for (i = 0; i<(2 * n); i += 2)
+			{
+				xOpArray[i].xltype = xltypeNum;
+				xOpArray[i].val.num = V(i / 2);
+				xOpArray[i + 1].xltype = xltypeNum;
+				xOpArray[i + 1].val.num = sqrt(Cov(i / 2, i / 2));
+			}
 
-				_fprintf_p( MCout, "%g", (double)nIters );
-				_fprintf_p( MCout, "%s", Delim );
+			xOpArray[2 * n].xltype = xltypeNum;
+			xOpArray[2 * n].val.num = ChiSqr;
 
-				_fprintf_p( MCout, "%g", (std::clock()-start)/(double)CLOCKS_PER_SEC );
-				_fprintf_p( MCout, "%s", Delim );
-				for(int j=0;j<TracerNum;j++) //Modeled Tracer Concentrations
-				{
-					Solver.obj.Model.MonteCarlo.MonteResults(SimCnt-1,j+n)=InitTracerOutput(j);
-					_fprintf_p( MCout, "%g", InitTracerOutput(j) );
-					_fprintf_p( MCout, "%s", Delim );
-				}
-				for(int j=0;j<TracerNum;j++) //Simulated Tracer Concentrations
-				{
-					_fprintf_p( MCout, "%g", Solver.obj.Sample.MeasTracerConcs(j) );
-					_fprintf_p( MCout, "%s", Delim );
-				}
-				_fprintf_p( MCout, "%s\n", "" );
+			DoF = (double)TracerNum - n;  //degrees of freedom
+											//test = pdf(ChiSqrDist,ChiSqr);
+											//test = 1-cdf(ChiSqrDist,ChiSqr);
+			xOpArray[2 * n + 1].xltype = xltypeNum;
+			if (DoF>0 && ChiSqr<100000)
+			{
+				boost::math::chi_squared_distribution<> ChiSqrDist(DoF);
+				xOpArray[2 * n + 1].val.num = 1 - cdf(ChiSqrDist, ChiSqr);
 			}
 			else
 			{
-				for(j=0;j<n;j++) //Fit parameters
-				{
-					Solver.obj.Model.MonteCarlo.MonteResults(SimCnt-1,j)=V(j);
-					#ifdef _DEBUG
-						_fprintf_p( stream, "%g", V(j) );
-						_fprintf_p( stream, "%s", Delim );
-					#endif
-				}
-					for(int j=0;j<TracerNum;j++) //Modeled Tracer Concentrations
-						Solver.obj.Model.MonteCarlo.MonteResults(SimCnt-1,j+n)=InitTracerOutput(j);
-				#ifdef _DEBUG
-					_fprintf_p( stream, "%s\n", "" );
-				#endif
+				xOpArray[2 * n + 1].val.num = -99;
 			}
 
-			//Start Monte Carlo Simulations
-			if (Solver.obj.Model.MonteCarlo.IsMonteCarlo==true && SimCnt<Solver.obj.Model.MonteCarlo.TotalSims)
+			xOpArray[2 * n + 2].xltype = xltypeNum;
+			xOpArray[2 * n + 2].val.num = HiTracer;
+
+			xOpArray[2 * n + 3].xltype = xltypeNum;
+			xOpArray[2 * n + 3].val.num = HiChiSqr;
+
+			xOpArray[2 * n + 4].xltype = xltypeNum;
+			xOpArray[2 * n + 4].val.num = (double)nIters;
+
+			xOpArray[2 * n + 5].xltype = xltypeNum;
+			xOpArray[2 * n + 5].val.num = (std::clock() - start) / (double)CLOCKS_PER_SEC;
+
+			if (Solver.obj.Model.MonteCarlo.IsMonteCarlo == true)
 			{
-				ChiSqr=0;
-				PrevChiSqr=0;
-				for(int j=0;j<TracerNum;j++)
-				{
-					Solver.obj.Sample.MeasTracerConcs(j) = Solver.obj.Model.MonteCarlo.SimulatedConcs(SimCnt,j);
-					D(j)=(Solver.obj.Sample.MeasTracerConcs(j)-InitTracerOutput(j))/Solver.obj.Sample.MeasSigmas(j);
-					ChiSqr += D(j)*D(j);
-					#ifdef _DEBUG
-						_fprintf_p( stream, "%s", Delim );
-						_fprintf_p( stream, "%g\n", Solver.obj.Model.MonteCarlo.SimulatedConcs(SimCnt,j) );	
-					#endif
-				}
-				for (j = 0; j<8; j++)
-					ModelArgs[j] = test = Solver.obj.Model.InitModVals(j);
-				#ifdef _DEBUG
-					_fprintf_p( stream, "%s", Delim );
-					_fprintf_p( stream, "%g\n", ChiSqr );	
-				#endif
-				//SendMessage(hwndPB, PBM_STEPIT, 0, 0);
-				SendMessage(GetDlgItem(hwndPB,IDC_PROGBAR),PBM_STEPIT,0,0);
+				GetHwnd(&g_hWndMain);
+				hwndPB = CreateProgressBase();
+				SendMessage(GetDlgItem(hwndPB, IDC_PROGBAR), PBM_SETRANGE32, 0, Solver.obj.Model.MonteCarlo.TotalSims);
+				ShowWindow(hwndPB, SW_SHOW);
 				UpdateWindow(hwndPB);
-				SimCnt++;
+				if (Solver.obj.Model.MonteCarlo.IsWriteOut == true)
+				{
+					//Write Header to File
+					char s[] = "SimNum, ";
+					char t[] = "OptParm, ";
+					char x[] = "OptParmErr, ";
+					_fprintf_p(MCout, "%s", s);
+					for (j = 0; j<n; j++) //Fit parameters
+					{
+						_fprintf_p(MCout, "%s", t);
+						_fprintf_p(MCout, "%s", x);
+					}
+					char u[] = "ChiSqr, ChiSqrProb, HiTracer, HiChiSqr, Iters, Time, ";
+					_fprintf_p(MCout, "%s", u);
+					char v[] = "ModConcs, ";
+					for (int j = 0; j<TracerNum; j++) //Modeled Tracer Concentrations
+					{
+						_fprintf_p(MCout, "%s", v);
+					}
+					char w[] = "SimConcs, ";
+					for (int j = 0; j<TracerNum; j++) //Simulated Tracer Concentrations
+					{
+						_fprintf_p(MCout, "%s", w);
+					}
+					_fprintf_p(MCout, "%s\n", "");
+				}
 			}
-			else if (Solver.obj.Model.MonteCarlo.IsMonteCarlo)
-				SimCnt++;
-		}while(Solver.obj.Model.MonteCarlo.IsMonteCarlo==true && SimCnt<=Solver.obj.Model.MonteCarlo.TotalSims);
-		if (Solver.obj.Model.MonteCarlo.IsMonteCarlo==true)
+		}
+		else if (Solver.obj.Model.MonteCarlo.IsWriteOut == true)
 		{
-			xOpArray[2*n+6].xltype=xltypeNum;
-			xOpArray[2*n+6].val.num=(std::clock()-start)/(double)CLOCKS_PER_SEC;
+			//Write Results to File
+			for (j = 0; j<n; j++) //Fit parameters
+				Solver.obj.Model.MonteCarlo.MonteResults(SimCnt - 1, j) = V(j);
+			_fprintf_p(MCout, "%d", SimCnt);
+			_fprintf_p(MCout, "%s", Delim);
+			Cov = InvertMatrix(ATA);
+			for (i = 0; i<(2 * n); i += 2)
+			{
+				_fprintf_p(MCout, "%g", V(i / 2));
+				_fprintf_p(MCout, "%s", Delim);
+				_fprintf_p(MCout, "%g", sqrt(Cov(i / 2, i / 2)));
+				_fprintf_p(MCout, "%s", Delim);
+			}
+			_fprintf_p(MCout, "%g", ChiSqr);
+			_fprintf_p(MCout, "%s", Delim);
+
+			DoF = (double)TracerNum - n;  //degrees of freedom
+			if (DoF>0 && ChiSqr<100000)
+			{
+				boost::math::chi_squared_distribution<> ChiSqrDist(DoF);
+				_fprintf_p(MCout, "%g", 1 - cdf(ChiSqrDist, ChiSqr));
+			}
+			else
+			{
+				_fprintf_p(MCout, "%g", (double)-99);
+			}
+			_fprintf_p(MCout, "%s", Delim);
+
+			_fprintf_p(MCout, "%g", (double)HiTracer);
+			_fprintf_p(MCout, "%s", Delim);
+
+			_fprintf_p(MCout, "%g", HiChiSqr);
+			_fprintf_p(MCout, "%s", Delim);
+
+			_fprintf_p(MCout, "%g", (double)nIters);
+			_fprintf_p(MCout, "%s", Delim);
+
+			_fprintf_p(MCout, "%g", (std::clock() - start) / (double)CLOCKS_PER_SEC);
+			_fprintf_p(MCout, "%s", Delim);
+			for (int j = 0; j<TracerNum; j++) //Modeled Tracer Concentrations
+			{
+				Solver.obj.Model.MonteCarlo.MonteResults(SimCnt - 1, j + n) = InitTracerOutput(j);
+				_fprintf_p(MCout, "%g", InitTracerOutput(j));
+				_fprintf_p(MCout, "%s", Delim);
+			}
+			for (int j = 0; j<TracerNum; j++) //Simulated Tracer Concentrations
+			{
+				_fprintf_p(MCout, "%g", Solver.obj.Sample.MeasTracerConcs(j));
+				_fprintf_p(MCout, "%s", Delim);
+			}
+			_fprintf_p(MCout, "%s\n", "");
+			}
+		else
+		{
+			for (j = 0; j<n; j++) //Fit parameters
+			{
+				Solver.obj.Model.MonteCarlo.MonteResults(SimCnt - 1, j) = V(j);
+#ifdef _DEBUG
+				_fprintf_p(stream, "%g", V(j));
+				_fprintf_p(stream, "%s", Delim);
+#endif
+			}
+			for (int j = 0; j<TracerNum; j++) //Modeled Tracer Concentrations
+				Solver.obj.Model.MonteCarlo.MonteResults(SimCnt - 1, j + n) = InitTracerOutput(j);
+#ifdef _DEBUG
+			_fprintf_p(stream, "%s\n", "");
+#endif
+		}
+
+		//Start Monte Carlo Simulations
+		if (Solver.obj.Model.MonteCarlo.IsMonteCarlo == true && SimCnt<Solver.obj.Model.MonteCarlo.TotalSims)
+		{
+			ChiSqr = 0;
+			PrevChiSqr = 0;
+			for (int j = 0; j<TracerNum; j++)
+			{
+				Solver.obj.Sample.MeasTracerConcs(j) = Solver.obj.Model.MonteCarlo.SimulatedConcs(SimCnt, j);
+				D(j) = (Solver.obj.Sample.MeasTracerConcs(j) - InitTracerOutput(j)) / Solver.obj.Sample.MeasSigmas(j);
+				ChiSqr += D(j)*D(j);
+#ifdef _DEBUG
+				_fprintf_p(stream, "%s", Delim);
+				_fprintf_p(stream, "%g\n", Solver.obj.Model.MonteCarlo.SimulatedConcs(SimCnt, j));
+#endif
+			}
+			for (j = 0; j<8; j++)
+				ModelArgs[j] = test = Solver.obj.Model.InitModVals(j);
+#ifdef _DEBUG
+			_fprintf_p(stream, "%s", Delim);
+			_fprintf_p(stream, "%g\n", ChiSqr);
+#endif
+			//SendMessage(hwndPB, PBM_STEPIT, 0, 0);
+			SendMessage(GetDlgItem(hwndPB, IDC_PROGBAR), PBM_STEPIT, 0, 0);
+			UpdateWindow(hwndPB);
+			SimCnt++;
+		}
+		else if (Solver.obj.Model.MonteCarlo.IsMonteCarlo)
+		SimCnt++;
+		}while (Solver.obj.Model.MonteCarlo.IsMonteCarlo == true && SimCnt <= Solver.obj.Model.MonteCarlo.TotalSims);
+		if (Solver.obj.Model.MonteCarlo.IsMonteCarlo == true)
+		{
+			xOpArray[2 * n + 6].xltype = xltypeNum;
+			xOpArray[2 * n + 6].val.num = (std::clock() - start) / (double)CLOCKS_PER_SEC;
 			VectorXd StatVec = VectorXd::Zero(Solver.obj.Model.MonteCarlo.TotalSims);
-			j=2*(n+TracerNum);
-			SimCnt=0;
+			j = 2 * (n + TracerNum);
+			SimCnt = 0;
 			while (j>0)
 			{
-				StatVec=Solver.obj.Model.MonteCarlo.MonteResults.block(0,SimCnt,Solver.obj.Model.MonteCarlo.TotalSims,1);
-				Mean=StatVec.mean();
-				for(int i=0;i<Solver.obj.Model.MonteCarlo.TotalSims;i++)
-					StatVec(i)=pow(Solver.obj.Model.MonteCarlo.MonteResults(i,SimCnt)-Mean,2);
-				StdDev=sqrt(StatVec.sum()/Solver.obj.Model.MonteCarlo.TotalSims);
-				xOpArray[4*n+7+(2*TracerNum)-j].xltype=xltypeNum;
-				xOpArray[4*n+7+(2*TracerNum)-j].val.num=Mean;
-				xOpArray[4*n+7+(2*TracerNum)-j+1].xltype=xltypeNum;
-				xOpArray[4*n+7+(2*TracerNum)-j+1].val.num=StdDev;
-				j+= -2;
+				StatVec = Solver.obj.Model.MonteCarlo.MonteResults.block(0, SimCnt, Solver.obj.Model.MonteCarlo.TotalSims, 1);
+				Mean = StatVec.mean();
+				for (int i = 0; i<Solver.obj.Model.MonteCarlo.TotalSims; i++)
+					StatVec(i) = pow(Solver.obj.Model.MonteCarlo.MonteResults(i, SimCnt) - Mean, 2);
+				StdDev = sqrt(StatVec.sum() / Solver.obj.Model.MonteCarlo.TotalSims);
+				xOpArray[4 * n + 7 + (2 * TracerNum) - j].xltype = xltypeNum;
+				xOpArray[4 * n + 7 + (2 * TracerNum) - j].val.num = Mean;
+				xOpArray[4 * n + 7 + (2 * TracerNum) - j + 1].xltype = xltypeNum;
+				xOpArray[4 * n + 7 + (2 * TracerNum) - j + 1].val.num = StdDev;
+				j += -2;
 				SimCnt++;
 			}
 			UnhookExcelWindow(g_hWndMain);
@@ -701,258 +1278,25 @@ __declspec(dllexport) LPXLOPER12 WINAPI SolveNewtonMethod(LPXLOPER12 lxMeasTrace
 		xArray->xltype = xltypeMulti | xlbitDLLFree;
 		xArray->val.array.columns = 1;
 		xArray->val.array.rows = size;
-		xArray->val.array.lparray=xOpArray;
+		xArray->val.array.lparray = xOpArray;
 
-#ifdef _DEBUG
+		#ifdef _DEBUG
 		LPXLOPER12 px;
-	_fprintf_p( stream, "%s\n", "" );
-	for(i=0;i<2*n+6;i++)
-	{
-		px = xArray->val.array.lparray + i;
-		_fprintf_p( stream, "%g\n", px->val.num );
-		//_fprintf_p( stream, "%s", Delim );
-	}
-	fclose( stream );
-#endif
+		_fprintf_p(stream, "%s\n", "");
+		for (i = 0; i<2 * n + 6; i++)
+		{
+			px = xArray->val.array.lparray + i;
+			_fprintf_p(stream, "%g\n", px->val.num);
+			//_fprintf_p( stream, "%s", Delim );
+		}
+		fclose(stream);
+		#endif
 		return xArray;
 	}
 	else
 	{
-		xMulti[0].val.num=0;
-		xMulti[0].xltype=xltypeNum;
-		return (LPXLOPER12)&xMulti[0];
-	}
-}
-
-
-__declspec(dllexport) LPXLOPER12 WINAPI SolveDirectSearch(LPXLOPER12 lxMeasTracerConcs, LPXLOPER12 lxMeasSigmas, 
-	LPXLOPER12 lxSampleDates, int ModelNum, LPXLOPER12 lxFitParmIndexes, LPXLOPER12 lxInitModVals, 
-	LPXLOPER12 lxLowBounds, LPXLOPER12 lxHiBounds, LPXLOPER12 lxTracers,FP lxdateRange[],LPXLOPER12 lxTracerInputRange, 
-	LPXLOPER12 lxLambda, LPXLOPER12 lxuzTime, LPXLOPER12 lxUZtimeCond, LPXLOPER12 lxTracerComp_2, LPXLOPER12 lxDIC_1, LPXLOPER12 lxDIC_2,double Uppm, double THppm, 
-	double Porosity, double SedDensity, double He4SolnRate)
-{	
-	std::clock_t start;
-	start=std::clock();
-	
-	double HiChiSqr=0,ChiSqr=0,PrevChiSqr=0, MaxParmIterations=100;
-	double ModelArgs[8], MinChiSqr=100000, ParmDeltas[8]={1,1,0.05,0.05,0.005,1,0.05,0.05};
-	int nIters=0,k,j,i, Base, n, MinRow=0, TracerNum=0, TotalIterations=1, ParmIterations[8]={0,0,0,0,0,0,0,0};
-	MatrixXd InitTracerOutput;
-	static XLOPER12 xMulti[20], xArray;
-	LPXLOPER12 xRef;
-
-	xRef->val.xbool=false;
-	xRef->xltype=xltypeBool;
-#ifdef _DEBUG
-	if ( fopen_s( &stream, "TracerOutput.txt", "w" ) == 0)
-#endif
-
-	if(lxMeasTracerConcs->val.array.columns*lxMeasTracerConcs->val.array.rows>=1 && lxdateRange->rows>1 && lxTracerInputRange->val.array.columns*lxTracerInputRange->val.array.rows>1 && lxLambda->xltype == lxuzTime->xltype && lxuzTime->xltype == lxTracers->xltype)
-	{
-
-		LPM Solver(ModelNum,lxMeasTracerConcs, lxFitParmIndexes, lxInitModVals, lxTracers, lxdateRange, lxTracerInputRange, lxLambda, lxSampleDates, 
-					lxuzTime,lxUZtimeCond,lxMeasSigmas, lxHiBounds,lxLowBounds, lxTracerComp_2, Uppm, THppm, Porosity, SedDensity, He4SolnRate,xRef,0,false);
-		n=Solver.obj.Model.FitParmIndexes.Val.size();
-		TracerNum=Solver.obj.Sample.ActiveVals.sum();
-		VectorXd D=VectorXd::Zero(TracerNum);
-
-		for (j=0;j<n;j++)
-		{
-			i=(int)Solver.obj.Model.FitParmIndexes.Val[j]-1;
-			ParmIterations[i] = int ((Solver.obj.Model.HiBounds(i)-Solver.obj.Model.LowBounds(i))/ParmDeltas[i])+1;
-			if(ParmIterations[i]>MaxParmIterations)
-			{
-				ParmIterations[i]=MaxParmIterations;
-				ParmDeltas[i]=(Solver.obj.Model.HiBounds(i)-Solver.obj.Model.LowBounds(i)+1*ParmDeltas[i])/MaxParmIterations;
-			}
-			TotalIterations*=ParmIterations[i];
-		}
-		MatrixXd Result = MatrixXd::Zero(2*TotalIterations,n+3);
-		
-		for (j=0; j<8;j++)
-			ModelArgs[j] = Solver.obj.Model.InitModVals(j);
-		
-		if(Solver.obj.Model.FitParmIndexes.isUZtime==true)
-		{
-			for(j=0;j<Solver.obj.Tracer.Tracers.size();j++)
-			{
-				if(Solver.obj.Tracer.UZtimeCond[j]==1)
-					Solver.obj.Tracer.UZtime(j)=ModelArgs[0];
-			}
-		}
-		MinRow = 0;
-		MinChiSqr=1000000;
-		if(n>1)
-		{
-			k=0;
-			for(int l=1;l<n;l++)
-			{
-				i=(int)Solver.obj.Model.FitParmIndexes.Val[l]-1;
-				for(int t=0;t<ParmIterations[i];t++)
-				{
-					ModelArgs[i]=Solver.obj.Model.LowBounds(i)+t*ParmDeltas[i];
-					Base=(int)Solver.obj.Model.FitParmIndexes.Val[0]-1;
-					//#pragma	omp parallel for schedule(dynamic)
-					for(int j=0;j<ParmIterations[Base];j++)
-					{
-						ModelArgs[Base]=Solver.obj.Model.LowBounds(Base)+j*ParmDeltas[Base];
-						InitTracerOutput=Solver.LPM_TracerOutput(ModelArgs[1],ModelArgs[2],ModelArgs[3],
-							ModelArgs[4],ModelArgs[5],ModelArgs[6],ModelArgs[7],lxDIC_1->val.num,lxDIC_2->val.num);
-						#ifdef _DEBUG
-							_fprintf_p( stream, "%g", ModelArgs[0] );	
-							_fprintf_p( stream, "%s", Delim );
-							_fprintf_p( stream, "%g", ModelArgs[1] );
-							_fprintf_p( stream, "%s", Delim );
-							_fprintf_p( stream, "%g", ModelArgs[2] );	
-							_fprintf_p( stream, "%s", Delim );
-							_fprintf_p( stream, "%g", ModelArgs[3] );
-							_fprintf_p( stream, "%s", Delim );
-							_fprintf_p( stream, "%g", ModelArgs[4] );
-							_fprintf_p( stream, "%s", Delim );
-							_fprintf_p( stream, "%g", ModelArgs[5] );	
-							_fprintf_p( stream, "%s", Delim );
-							_fprintf_p( stream, "%g", ModelArgs[6] );
-							_fprintf_p( stream, "%s", Delim );
-							_fprintf_p( stream, "%g", ModelArgs[7] );
-							_fprintf_p( stream, "%s\n", "" );
-						#endif
-						ChiSqr=0;
-						HiChiSqr=0;
-						for(int f=0;f<TracerNum;f++)
-						{
-							D(f)=(Solver.obj.Sample.MeasTracerConcs(f)-InitTracerOutput(f))/Solver.obj.Sample.MeasSigmas(f);
-							ChiSqr += D(f)*D(f);
-							if(D(f)*D(f) > HiChiSqr)
-							{
-								Result(k,2) = D(f)*D(f);
-								Result(k,3) = f;
-							}
-							#ifdef _DEBUG
-								_fprintf_p( stream, "%s", Delim );
-								_fprintf_p( stream, "%g", InitTracerOutput(f) );	
-							#endif
-						}
-						if(ChiSqr<MinChiSqr)
-						{
-							MinChiSqr=ChiSqr;
-							MinRow = k;
-						}
-						Result(k,0) = ChiSqr;
-						Result(k,1) = ModelArgs[Base];
-						for(int m=1;m<n;m++)
-						{
-							int ParmInt=(int)Solver.obj.Model.FitParmIndexes.Val[m]-1;
-							Result(k,1+m) = ModelArgs[ParmInt];
-						}
-						k++;
-						#ifdef _DEBUG
-							_fprintf_p( stream, "%s", Delim );
-							_fprintf_p( stream, "%g\n", ChiSqr );	
-						#endif
-					}
-				}
-			}
-		}
-		else
-		{
-			i=(int)Solver.obj.Model.FitParmIndexes.Val[0]-1;
-			#pragma	omp parallel for schedule(dynamic)
-			for(k=0;k<TotalIterations;k++)
-			{
-				ModelArgs[i]=Solver.obj.Model.LowBounds(i)+k*ParmDeltas[i];
-				InitTracerOutput=Solver.LPM_TracerOutput(ModelArgs[1],ModelArgs[2],ModelArgs[3],
-					ModelArgs[4],ModelArgs[5],ModelArgs[6],ModelArgs[7],lxDIC_1->val.num,lxDIC_2->val.num);
-				#ifdef _DEBUG
-					_fprintf_p( stream, "%g", ModelArgs[0] );	
-					_fprintf_p( stream, "%s", Delim );
-					_fprintf_p( stream, "%g", ModelArgs[1] );
-					_fprintf_p( stream, "%s", Delim );
-					_fprintf_p( stream, "%g", ModelArgs[2] );	
-					_fprintf_p( stream, "%s", Delim );
-					_fprintf_p( stream, "%g", ModelArgs[3] );
-					_fprintf_p( stream, "%s", Delim );
-					_fprintf_p( stream, "%g", ModelArgs[4] );
-					_fprintf_p( stream, "%s", Delim );
-					_fprintf_p( stream, "%g", ModelArgs[5] );	
-					_fprintf_p( stream, "%s", Delim );
-					_fprintf_p( stream, "%g", ModelArgs[6] );
-					_fprintf_p( stream, "%s", Delim );
-					_fprintf_p( stream, "%g", ModelArgs[7] );
-					_fprintf_p( stream, "%s\n", "" );
-				#endif
-				ChiSqr=0;
-				HiChiSqr=0;
-				for(j=0;j<TracerNum;j++)
-				{
-					D(j)=(Solver.obj.Sample.MeasTracerConcs(j)-InitTracerOutput(j))/Solver.obj.Sample.MeasSigmas(j);
-					ChiSqr += D(j)*D(j);
-					if(D(j)*D(j) > HiChiSqr)
-					{
-						Result(k,2) = D(j)*D(j);
-						Result(k,3) = j;
-					}
-					#ifdef _DEBUG
-						_fprintf_p( stream, "%s", Delim );
-						_fprintf_p( stream, "%g", InitTracerOutput(j) );	
-					#endif
-				}
-				if(ChiSqr<MinChiSqr)
-				{
-					MinChiSqr=ChiSqr;
-					MinRow = k;
-				}
-				Result(k,0) = ChiSqr;
-				Result(k,1) = ModelArgs[i];
-				#ifdef _DEBUG
-					_fprintf_p( stream, "%s", Delim );
-					_fprintf_p( stream, "%g\n", ChiSqr );	
-				#endif
-			}
-		}
-
-#ifdef _DEBUG
-	_fprintf_p( stream, "%s\n", "" );
-	fclose( stream );
-#endif
-	j=1;	
-	for(i=0;i<(2*n);i+=2)
-		{
-			xMulti[i].val.num=Result(MinRow,j);
-			xMulti[i].xltype=xltypeNum;
-			xMulti[i+1].val.num=-99;
-			xMulti[i+1].xltype=xltypeNum;
-			j++;
-		}
-
-		xMulti[2*n].val.num=Result(MinRow,0);
-		xMulti[2*n].xltype=xltypeNum;
-		//
-		xMulti[2*n+1].val.num=-99;
-		xMulti[2*n+1].xltype=xltypeNum;
-
-		xMulti[2*n+2].val.num=Result(MinRow,n+2);
-		xMulti[2*n+2].xltype=xltypeNum;
-	
-		xMulti[2*n+3].val.num=Result(MinRow,n+1);
-		xMulti[2*n+3].xltype=xltypeNum;
-
-		xMulti[2*n+4].val.num=(double)TotalIterations;
-		xMulti[2*n+4].xltype=xltypeNum;
-
-		xMulti[2*n+5].val.num=(std::clock()-start)/(double)CLOCKS_PER_SEC;
-		xMulti[2*n+5].xltype=xltypeNum;	
-
-		xArray.xltype=xltypeMulti|xlbitXLFree;
-		xArray.val.array.lparray=xMulti;
-		xArray.val.array.rows=2*n+6;
-		xArray.val.array.columns=1;
-
-		return (LPXLOPER12)&xArray;
-	}
-	else
-	{
-		xMulti[0].val.num=MinChiSqr;
-		xMulti[0].xltype=xltypeNum;
+		xMulti[0].val.num = 0;
+		xMulti[0].xltype = xltypeNum;
 		return (LPXLOPER12)&xMulti[0];
 	}
 }
