@@ -673,7 +673,7 @@ static LPWSTR g_rgWorksheetFuncs
 	{ L"BMM_GAM_He4",
 		L"BBBBBBBBBB$",                   // up to 255 args in Excel 2007, 
 										   // upto 29 args in Excel 2003 and earlier versions
-		L"GAM_EPM_He4",
+		L"BMM_GAM_He4",
 		L"Uranium ppm, Thorium ppm, Porosity (phi), Sediment density (rho), Age of young component, Alpha, Helium solution rate, Mixing fraction (young part), Concentration of old component",
 		L"1",
 		L"TracerLPM Add-In",
@@ -826,7 +826,7 @@ static LPWSTR g_rgWorksheetFuncs
 	{ L"gt_BMM_GAM",
 		L"BBBBBBBB$",                   // up to 255 args in Excel 2007, 
 										   // upto 29 args in Excel 2003 and earlier versions
-		L"gt_BMM_EPM",
+		L"gt_BMM_GAM",
 		L"Min Age, Max Age, Tau, Alpha, UZtt, MixFrac, 2ndFrac",
 		L"1",
 		L"TracerLPM Add-In",
