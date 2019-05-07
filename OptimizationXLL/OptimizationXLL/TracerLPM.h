@@ -1946,7 +1946,7 @@ VectorXd LPM::d_dx_LPM_Model(double MeanAge, double ModelParm1, double ModelParm
 		{
 		case 1: //uzTime
 			Delta = 0.01*ScaleFact;
-
+			
 			for (int i = 0; i < obj.Tracer.UZtime.size(); i++)   // -2*delta
 			{
 				if (obj.Tracer.UZtimeCond[i] == 1)
@@ -2354,16 +2354,16 @@ static LPWSTR g_rgWorksheetFuncs
 		L"Dissolved inorganic carbon content - component 1",
 		L"Dissolved inorganic carbon content - component 2"
 	},
-	{ L"SolveDirectSearch",
-		L"QQQQIQQQQQKQQQQQQQ",                   // up to 255 args in Excel 2007, 
-			//QQQQIQQQQQKQQQQ							   // upto 29 args in Excel 2003 and earlier versions
-		L"SolveDirectSearch",
+	{ L"SolveLevenbergMarquardt",
+		L"QQQQIQQQQQKQQQQQQQBBBBBQIQQ",                   // up to 255 args in Excel 2007, 
+														  //QQQQIQQQQQKQQQQ							   // upto 29 args in Excel 2003 and earlier versions
+		L"SolveLevenbergMarquardt",
 		L"MeasTracerConcs,MeasSigmas,SampleDates,ModelNum,FitParmIndexes,InitModVals,LoBounds,HiBounds,Tracers,DateRange,TracerInputRange,Lambdas,UZtime,UZtimeCond,TracerComp_2, DIC-1, DIC-2",
 		L"1",
 		L"TracerLPM Add-In",
-		L"",                                    
-		L"",                                  
-		L"Solves for age and error",   
+		L"",
+		L"",
+		L"Solves for age and error",
 		L"Measured Tracer Concentrations",
 		L"Measured Sigmas",
 		L"Sample date(s)",
