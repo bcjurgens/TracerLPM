@@ -39,6 +39,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_6ADC14AD33044AE19C9CDBFEA43E6193"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_7970A1206FF74A0A9DEA5AC94248AA80"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -57,12 +63,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_C12E51A372A94162BA4137DA044E877D"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_C466989234CC47DB94F36676AD36514F"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -75,13 +75,19 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_E61F8BEBD4694D8A801D5C0547893C50"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_ECA6D970DA26473EB4DDEA560C0FB638"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_F1674D55E8B540C4A34CC6458A992138"
+        "MsmKey" = "8:_F0B6C88288BE450389647E6FEC8E1F81"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -109,6 +115,14 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+            }
         }
         "Release"
         {
@@ -125,6 +139,22 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.5"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.5 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.5"
+                    }
+                }
+            }
         }
     }
     "Deployable"
@@ -186,6 +216,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6ADC14AD33044AE19C9CDBFEA43E6193"
+            {
+            "SourcePath" = "8:..\\..\\..\\Workbook\\Examples\\TracerLPM_V_B2_6_Example_2.xlsm"
+            "TargetName" = "8:TracerLPM_V_B2_6_Example_2.xlsm"
+            "Tag" = "8:"
+            "Folder" = "8:_51A41A65C78A4A1182A50D6BF8A9B589"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_835D6CA0EBDD40B8B0BE64A2C586AC64"
             {
             "SourcePath" = "8:..\\..\\TracerLPM_small.ico"
@@ -212,26 +262,6 @@
             "TargetName" = "8:TracerLPM_Opt_32.xll"
             "Tag" = "8:"
             "Folder" = "8:_DC7C297A379340FE8B4BE329836B1AFE"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C12E51A372A94162BA4137DA044E877D"
-            {
-            "SourcePath" = "8:..\\..\\..\\Workbook\\TracerLPM_V_B2_5.xlsm"
-            "TargetName" = "8:TracerLPM_V_B2_5.xlsm"
-            "Tag" = "8:"
-            "Folder" = "8:_4AD7896149D545889400F37DFD118C86"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -286,10 +316,30 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F1674D55E8B540C4A34CC6458A992138"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E61F8BEBD4694D8A801D5C0547893C50"
             {
-            "SourcePath" = "8:..\\..\\..\\Workbook\\Examples\\TracerLPM_V_B2_4_Example_1.xlsm"
-            "TargetName" = "8:TracerLPM_V_B2_4_Example_1.xlsm"
+            "SourcePath" = "8:..\\..\\..\\Workbook\\TracerLPM_V_B2_6.xlsm"
+            "TargetName" = "8:TracerLPM_V_B2_6.xlsm"
+            "Tag" = "8:"
+            "Folder" = "8:_4AD7896149D545889400F37DFD118C86"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F0B6C88288BE450389647E6FEC8E1F81"
+            {
+            "SourcePath" = "8:..\\..\\..\\Workbook\\Examples\\TracerLPM_V_B2_6_Example_1.xlsm"
+            "TargetName" = "8:TracerLPM_V_B2_6_Example_1.xlsm"
             "Tag" = "8:"
             "Folder" = "8:_51A41A65C78A4A1182A50D6BF8A9B589"
             "Condition" = "8:"
@@ -417,7 +467,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:TracerLPM_x32"
         "ProductCode" = "8:{F3DF887A-496C-4D15-BE58-68453B29CBB7}"
-        "PackageCode" = "8:{433F3BEB-CBF1-4641-8DC0-BAD31BFBE97E}"
+        "PackageCode" = "8:{EA387335-2334-4968-94D6-2B06973180A3}"
         "UpgradeCode" = "8:{47E12FB6-C93F-422F-A2E0-EC4085760F2A}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -545,7 +595,7 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_C12E51A372A94162BA4137DA044E877D"
+            "Target" = "8:_E61F8BEBD4694D8A801D5C0547893C50"
             "Folder" = "8:_E7E36F9148B140AC9357288B96AD8BC3"
             "WorkingFolder" = "8:_4AD7896149D545889400F37DFD118C86"
             "Icon" = "8:_835D6CA0EBDD40B8B0BE64A2C586AC64"
@@ -559,7 +609,7 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_C12E51A372A94162BA4137DA044E877D"
+            "Target" = "8:_E61F8BEBD4694D8A801D5C0547893C50"
             "Folder" = "8:_5529C28A94074456872887A4C9113F13"
             "WorkingFolder" = "8:_4AD7896149D545889400F37DFD118C86"
             "Icon" = "8:_C8D415B5A6ED4009B5F05595304A0ED1"
