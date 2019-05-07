@@ -124,7 +124,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;TRACERLPM_2015_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;LPM_FUNCTIONSXLL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>C:\2010 Office System Developer Resources\Excel2010XLLSDK\INCLUDE;C:\Users\bjurgens\Documents\Visual Studio 2015\eigen-eigen-26667be4f70b;C:\boost_1_62_0\boost_1_62_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OpenMPSupport>
       </OpenMPSupport>
@@ -136,10 +136,10 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <OutputFile>$(OutDir)$(ProjectName).xll</OutputFile>
+      <OutputFile>$(OutDir)TracerLPMfunctions_64_v_2.xll</OutputFile>
       <AdditionalLibraryDirectories>C:\2010 Office System Developer Resources\Excel2010XLLSDK\LIB\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>xlcall32.lib;frmwrk32.lib;comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <ModuleDefinitionFile>TracerLPM.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>TracerLPMfunction.def</ModuleDefinitionFile>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
@@ -184,7 +184,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;TRACERLPM_2015_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;LPM_FUNCTIONSXLL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>C:\boost_1_62_0\boost_1_62_0;C:\Users\bjurgens\Documents\Visual Studio 2015\eigen-eigen-26667be4f70b;C:\2010 Office System Developer Resources\Excel2010XLLSDK\INCLUDE</AdditionalIncludeDirectories>
       <OpenMPSupport>true</OpenMPSupport>
       <PrecompiledHeaderFile>
