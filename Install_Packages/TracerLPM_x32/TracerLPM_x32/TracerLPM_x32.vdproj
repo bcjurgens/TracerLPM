@@ -39,7 +39,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_6ADC14AD33044AE19C9CDBFEA43E6193"
+        "MsmKey" = "8:_5F2DDF43E2B249579B491F9BB1F32CE7"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -87,7 +87,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_F0B6C88288BE450389647E6FEC8E1F81"
+        "MsmKey" = "8:_ED88C38B30224034AC842C4F48457FBD"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -122,6 +122,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.5"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.5 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.5"
+                    }
+                }
             }
         }
         "Release"
@@ -216,10 +224,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6ADC14AD33044AE19C9CDBFEA43E6193"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5F2DDF43E2B249579B491F9BB1F32CE7"
             {
-            "SourcePath" = "8:..\\..\\..\\Workbook\\Examples\\TracerLPM_V_B2_6_Example_2.xlsm"
-            "TargetName" = "8:TracerLPM_V_B2_6_Example_2.xlsm"
+            "SourcePath" = "8:..\\..\\..\\Workbook\\Examples\\TracerLPM_V_B2_6_Example_1.xlsm"
+            "TargetName" = "8:TracerLPM_V_B2_6_Example_1.xlsm"
             "Tag" = "8:"
             "Folder" = "8:_51A41A65C78A4A1182A50D6BF8A9B589"
             "Condition" = "8:"
@@ -336,10 +344,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F0B6C88288BE450389647E6FEC8E1F81"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_ED88C38B30224034AC842C4F48457FBD"
             {
-            "SourcePath" = "8:..\\..\\..\\Workbook\\Examples\\TracerLPM_V_B2_6_Example_1.xlsm"
-            "TargetName" = "8:TracerLPM_V_B2_6_Example_1.xlsm"
+            "SourcePath" = "8:..\\..\\..\\Workbook\\Examples\\TracerLPM_V_B2_6_Example_2.xlsm"
+            "TargetName" = "8:TracerLPM_V_B2_6_Example_2.xlsm"
             "Tag" = "8:"
             "Folder" = "8:_51A41A65C78A4A1182A50D6BF8A9B589"
             "Condition" = "8:"
