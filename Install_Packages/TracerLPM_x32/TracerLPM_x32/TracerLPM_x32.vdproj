@@ -39,7 +39,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_5F2DDF43E2B249579B491F9BB1F32CE7"
+        "MsmKey" = "8:_6D756F3EE58240139269BD27AE572F31"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -63,7 +63,19 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_B61B85A0C1DC441095D2AC46C128CAA8"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_C466989234CC47DB94F36676AD36514F"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_C52AE295382E42AD8CCDAB2C7DAD14DA"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -75,19 +87,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_E61F8BEBD4694D8A801D5C0547893C50"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_ECA6D970DA26473EB4DDEA560C0FB638"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_ED88C38B30224034AC842C4F48457FBD"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -224,12 +224,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5F2DDF43E2B249579B491F9BB1F32CE7"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6D756F3EE58240139269BD27AE572F31"
             {
-            "SourcePath" = "8:..\\..\\..\\Workbook\\Examples\\TracerLPM_V_B2_6_Example_1.xlsm"
-            "TargetName" = "8:TracerLPM_V_B2_6_Example_1.xlsm"
+            "SourcePath" = "8:..\\..\\..\\Workbook\\TracerLPM_V_B2_7.xlsm"
+            "TargetName" = "8:TracerLPM_V_B2_7.xlsm"
             "Tag" = "8:"
-            "Folder" = "8:_51A41A65C78A4A1182A50D6BF8A9B589"
+            "Folder" = "8:_4AD7896149D545889400F37DFD118C86"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -284,6 +284,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B61B85A0C1DC441095D2AC46C128CAA8"
+            {
+            "SourcePath" = "8:..\\..\\..\\Workbook\\Examples\\TracerLPM_V_B2_7_Example_2.xlsm"
+            "TargetName" = "8:TracerLPM_V_B2_7_Example_2.xlsm"
+            "Tag" = "8:"
+            "Folder" = "8:_51A41A65C78A4A1182A50D6BF8A9B589"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C466989234CC47DB94F36676AD36514F"
             {
             "SourcePath" = "8:..\\..\\..\\LPM_FunctionsXLL\\Release\\TracerLPMfunctions_32_v_2.xll"
@@ -304,52 +324,32 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C52AE295382E42AD8CCDAB2C7DAD14DA"
+            {
+            "SourcePath" = "8:..\\..\\..\\Workbook\\Examples\\TracerLPM_V_B2_7_Example_1.xlsm"
+            "TargetName" = "8:TracerLPM_V_B2_7_Example_1.xlsm"
+            "Tag" = "8:"
+            "Folder" = "8:_51A41A65C78A4A1182A50D6BF8A9B589"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C8D415B5A6ED4009B5F05595304A0ED1"
             {
             "SourcePath" = "8:..\\..\\TracerLPM_large.ico"
             "TargetName" = "8:TracerLPM_large.ico"
             "Tag" = "8:"
             "Folder" = "8:_4AD7896149D545889400F37DFD118C86"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E61F8BEBD4694D8A801D5C0547893C50"
-            {
-            "SourcePath" = "8:..\\..\\..\\Workbook\\TracerLPM_V_B2_6.xlsm"
-            "TargetName" = "8:TracerLPM_V_B2_6.xlsm"
-            "Tag" = "8:"
-            "Folder" = "8:_4AD7896149D545889400F37DFD118C86"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_ED88C38B30224034AC842C4F48457FBD"
-            {
-            "SourcePath" = "8:..\\..\\..\\Workbook\\Examples\\TracerLPM_V_B2_6_Example_2.xlsm"
-            "TargetName" = "8:TracerLPM_V_B2_6_Example_2.xlsm"
-            "Tag" = "8:"
-            "Folder" = "8:_51A41A65C78A4A1182A50D6BF8A9B589"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -603,7 +603,7 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_E61F8BEBD4694D8A801D5C0547893C50"
+            "Target" = "8:_6D756F3EE58240139269BD27AE572F31"
             "Folder" = "8:_E7E36F9148B140AC9357288B96AD8BC3"
             "WorkingFolder" = "8:_4AD7896149D545889400F37DFD118C86"
             "Icon" = "8:_835D6CA0EBDD40B8B0BE64A2C586AC64"
@@ -617,7 +617,7 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_E61F8BEBD4694D8A801D5C0547893C50"
+            "Target" = "8:_6D756F3EE58240139269BD27AE572F31"
             "Folder" = "8:_5529C28A94074456872887A4C9113F13"
             "WorkingFolder" = "8:_4AD7896149D545889400F37DFD118C86"
             "Icon" = "8:_C8D415B5A6ED4009B5F05595304A0ED1"
