@@ -10,3 +10,4 @@ Version	Date		Description
 Version	Date		Description
 ----------------------------------------------------------------------------------------------------------------
 2.6	05/07/2019	Release of beta version 2.6. 
+2.7 06/18/2019  Updates to solver routines. Added flat-file routine for ModOut sheets. Fixed bug on 14C calcs using binary DM.
