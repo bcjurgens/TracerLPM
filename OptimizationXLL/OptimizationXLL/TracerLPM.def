@@ -12,6 +12,7 @@ EXPORTS
        ; UDFs
 			SolveNewtonMethod
 			SolveLevenbergMarquardt
+			SolveGNLM
 			UZ_Solver1D
 			UZ_Solver2D
 
