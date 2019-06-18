@@ -2321,7 +2321,7 @@ HANDLE g_hInst = NULL;
 HINSTANCE g_hInst2 = NULL;
 XCHAR g_szBuffer[100] = L"";
 #define MAX_V12_STRBUFFLEN    32678
-#define g_rgWorksheetFuncsRows 4 //changed from 44 to match removal of C14 functions
+#define g_rgWorksheetFuncsRows 5 //changed from 44 to match removal of C14 functions
 #define g_rgWorksheetFuncsCols 29
 static LPWSTR g_rgWorksheetFuncs
 [g_rgWorksheetFuncsRows][g_rgWorksheetFuncsCols] =
@@ -2381,6 +2381,34 @@ static LPWSTR g_rgWorksheetFuncs
 		L"Tracer component 2",
 		L"Dissolved inorganic carbon content - component 1",
 		L"Dissolved inorganic carbon content - component 2"
+	},
+	{ L"SolveGNLM",
+	L"QQQQIQQQQQKQQQQQQQBBBBBQIQQ",                   // up to 255 args in Excel 2007, 
+													  //QQQQIQQQQQKQQQQ							   // upto 29 args in Excel 2003 and earlier versions
+	L"SolveGNLM",
+	L"MeasTracerConcs,MeasSigmas,SampleDates,ModelNum,FitParmIndexes,InitModVals,LoBounds,HiBounds,Tracers,DateRange,TracerInputRange,Lambdas,UZtime,UZtimeCond,TracerComp_2, DIC-1, DIC-2",
+	L"1",
+	L"TracerLPM Add-In",
+	L"",
+	L"",
+	L"Solves for age and error",
+	L"Measured Tracer Concentrations",
+	L"Measured Sigmas",
+	L"Sample date(s)",
+	L"Model to be used: DM(1),PFM(2),PEM(3),EPM(4),EMM(5),FDM(6),GAM(7)",
+	L"Parameters to optimize: UZtime(1), Mean Age(2), 1st Model Parm(3), 2nd Model Parm(4), 1st Mixing Fraction(5), 1st Model Parm. 2nd deriv.(7), 2nd Model Parm. 2nd deriv.(8)",
+	L"Initial Model Values",
+	L"Low boundary condition",
+	L"High boundary condition",
+	L"Tracers to be included",
+	L"Date range for samples (must be same number of dates as tracers)",
+	L"Tracer range of samples (must be same number tracer values as dates)",
+	L"Lambda values",
+	L"Unsaturated zone time",
+	L"Unsaturated zone time condition",
+	L"Tracer component 2",
+	L"Dissolved inorganic carbon content - component 1",
+	L"Dissolved inorganic carbon content - component 2"
 	},
 	{ L"UZ_Solver1D",
 		L"QEEEEEEEEQQ",                   // up to 255 args in Excel 2007, 
