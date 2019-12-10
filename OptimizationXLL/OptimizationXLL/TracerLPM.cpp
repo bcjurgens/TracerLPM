@@ -364,7 +364,7 @@ __declspec(dllexport) LPXLOPER12 WINAPI SolveNewtonMethod(LPXLOPER12 lxMeasTrace
 			do
 			{
 				Tol = 0.0001;
-				MaxIters = 50;
+				MaxIters = 100;
 				NormV = 100;
 				PrevNormV = 101;
 				NormV_Diff = 100;
@@ -472,7 +472,7 @@ __declspec(dllexport) LPXLOPER12 WINAPI SolveNewtonMethod(LPXLOPER12 lxMeasTrace
 						if (Mult < Tol && dLevFactor < 10000)
 						{
 							if (dLevFactor == 0.0)
-								dLevFactor = 0.01;
+								dLevFactor = 1.0;
 							else
 								dLevFactor *= 10;
 							for (k = 0; k < n; k++)
@@ -489,13 +489,14 @@ __declspec(dllexport) LPXLOPER12 WINAPI SolveNewtonMethod(LPXLOPER12 lxMeasTrace
 							for (i = 0; i < n; i++)
 								V(i) = ModelArgs[(int)Solver.obj.Model.FitParmIndexes.Val[i] - 1];
 							NormV_Diff = (double)abs(PrevNormV - NormV);
-							if (dLevFactor > 0.0  && ChiSqr < 0.0)
+							if (dLevFactor > 0.0  && ChiSqrDiff < 0.0)
 								dLevFactor /= 10.0;
 						}
 				} while (NormV > Tol && NormV_Diff > Tol && nIters < MaxIters);
 				//Output begins here
 				if (SimCnt == 0)
 				{
+					ATA = ATA_Cov = JoT * Jo;
 					Cov = InvertMatrix(ATA_Cov);
 					for (i = 0; i<(2 * n); i += 2)
 					{
@@ -1557,13 +1558,14 @@ __declspec(dllexport) LPXLOPER12 WINAPI SolveGNLM(LPXLOPER12 lxMeasTracerConcs, 
 						for (i = 0; i < n; i++)
 							V(i) = ModelArgs[(int)Solver.obj.Model.FitParmIndexes.Val[i] - 1];
 						NormV_Diff = (double)abs(PrevNormV - NormV);
-						if (dLevFactor > 0.0  && ChiSqr < 0.0)
+						if (dLevFactor > 0.0  && ChiSqrDiff < 0.0)
 							dLevFactor /= 10.0;
 					}
 				} while (NormV > Tol && NormV_Diff > Tol && nIters < MaxIters);
 				//Output begins here
 				if (SimCnt == 0)
 				{
+					ATA = ATA_Cov = JoT * Jo;
 					Cov = InvertMatrix(ATA);
 					for (i = 0; i<(2 * n); i += 2)
 					{
