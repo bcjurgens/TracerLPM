@@ -1294,7 +1294,7 @@ VectorXd LPM::PEM_Int(double Tau, double PEM_Uratio, double PEM_Lratio, double S
 VectorXd LPM::GAM_Int(double Tau, double SampleDate, double Alpha)
 {
 	double GAMhalf1,GAMhalf2, GamFrac,GAMprev[10],EndDates[10];
-	double DR, Cin, MinDate, MaxDate, Beta, dGamHalf2;
+	double DR, Cin, MinDate, MaxDate, Beta, dGamHalf2=0;
 	double EndDate=0, GAMnoDecay=0.0, TimeIncrement;
 	double Multiplier, MinAge, MaxAge, GAMnd1=0.0, GAMnd2=0.0;
 	int i,j, nIters, StepInc, StopCriteria,NameCheck=0,Js[10];
@@ -1427,7 +1427,7 @@ VectorXd LPM::GAM_Int(double Tau, double SampleDate, double Alpha)
 						{
 							Multiplier = ReturnLambdaCorrection(MinAge+(i-1)*TimeIncrement,MaxAge,obj.Lambda2[k]);
 							GAMnd1 = boost::math::cdf(GAM_dist,MinAge+(i-1)*TimeIncrement);
-							GAMnd2 = dGamHalf2;
+							GAMnd2 = GAMhalf2; //I think this is supposed to be GAMhalf2 not dGamHalf2
 							GAMnoDecay = obj.Tracer.TracerInputRange(Js[k],k) * exp(-obj.Lambda2[k] * obj.Tracer.UZtime(k)) * (GAMnd2 - GAMnd1);
 							GAMnd1 = GAMnd2;
 							GAMhalf1 = GAMnd1;
