@@ -1448,7 +1448,7 @@ __declspec(dllexport) double WINAPI UserDefinedTracerOut(
 {
 	__int32 i=0, n=0;
 	__int32 j, StepInc, StopCriteria;
-	double DR, Cin, Result=0.0, Lambda2, Res2=0.0;
+	double DR, Cin, DateLookup, Result=0.0, Lambda2, Res2=0.0;
 	
 	j = DateRange->rows - 1;
 	StepInc = 1;
@@ -1461,11 +1461,12 @@ __declspec(dllexport) double WINAPI UserDefinedTracerOut(
 			StopCriteria = j;
 			j = 0;
 		}
-		DR = DateRange->array[j];
-		while ((SampleDate - DR - UZtime <= AgeRange->array[i]) && j != StopCriteria)
+		DR = round(1e6*DateRange->array[j]) / 1e6;
+		DateLookup = round(1e6*(SampleDate - DR - UZtime)) / 1e6;
+		while ((DateLookup <= AgeRange->array[i]) && j != StopCriteria)
 		{
 			j = j - StepInc;
-			DR = DateRange->array[j];
+			DR = round(1e6*DateRange->array[j]) / 1e6;
 		}
 		if (HeliumThree->val.xbool == TRUE)
 		{
@@ -1483,11 +1484,12 @@ __declspec(dllexport) double WINAPI UserDefinedTracerOut(
 				n = 0;
 				if (j != StopCriteria)
 				{
-					while ((SampleDate - DR - UZtime <= AgeRange->array[i+1]) && j != StopCriteria)
+					DateLookup = round(1e6*(SampleDate - DR - UZtime)) / 1e6;
+					while ((DateLookup <= AgeRange->array[i+1]) && j != StopCriteria)
 					{
 						n++;
 						j = j - StepInc;
-						DR = DateRange->array[j];
+						DR = round(1e6*DateRange->array[j]) / 1e6;
 						Cin += TracerRange->array[j];
 					}
 				}
@@ -1515,11 +1517,12 @@ __declspec(dllexport) double WINAPI UserDefinedTracerOut(
 				n = 0;
 				if (j != StopCriteria)
 				{
-					while ((SampleDate - DR - UZtime <= AgeRange->array[i+1]) && j != StopCriteria)
+					DateLookup = round(1e6*(SampleDate - DR - UZtime)) / 1e6;
+					while ((DateLookup <= AgeRange->array[i+1]) && j != StopCriteria)
 					{
 						n++;
 						j = j - StepInc;
-						DR = DateRange->array[j];
+						DR = round(1e6*DateRange->array[j]) / 1e6;
 						Cin += TracerRange->array[j];
 					}
 				}
@@ -1549,11 +1552,12 @@ __declspec(dllexport) double WINAPI UserDefinedTracerOut(
 				n = 0;
 				if (j != StopCriteria)
 				{
-					while ((SampleDate - DR - UZtime <= AgeRange->array[i+1]) && j != StopCriteria)
+					DateLookup = round(1e6*(SampleDate - DR - UZtime)) / 1e6;
+					while ((DateLookup <= AgeRange->array[i+1]) && j != StopCriteria)
 					{
 						n++;
 						j = j - StepInc;
-						DR = DateRange->array[j];
+						DR = round(1e6*DateRange->array[j]) / 1e6;
 						Cin += TracerRange->array[j];
 					}
 				}
@@ -1597,7 +1601,7 @@ __declspec(dllexport) double WINAPI PFM(
                         FP DateRange[], FP TracerRange[], double Tau, double SampleDate, 
 						double Lambda, double UZtime, LPXLOPER12 HeliumThree, LPXLOPER12 InitialTrit, LPXLOPER12 TritInitialTritRatio)
 {
-	double DR, Cin, Result, Lambda2;
+	double DR, Cin, Result, Lambda2, DateLookup;
 	__int32 j, StepInc, StopCriteria;
 	Result = 0;
 	j = DateRange->rows - 1;
@@ -1609,7 +1613,8 @@ __declspec(dllexport) double WINAPI PFM(
 		StopCriteria = j;
 		j = 0;
 	}
-	DR = DateRange->array[j];
+	DR = round(1e6*DateRange->array[j]) / 1e6;
+	DateLookup = round(1e6*(SampleDate - Tau - UZtime)) / 1e6;
 	if (HeliumThree->val.xbool == TRUE)
 	{
 		if (Lambda == 0.0)
@@ -1620,16 +1625,16 @@ __declspec(dllexport) double WINAPI PFM(
 		{
 			Lambda2 = Lambda;
 		}
-		if (SampleDate - Tau - UZtime < DateRange->array[StopCriteria])
+		if (DateLookup < DateRange->array[StopCriteria])
 		{
 			Result = TracerRange->array[StopCriteria] * exp(-Lambda2 * UZtime) * (1 - exp(-Lambda2 * Tau));
 		}
 		else
 		{
-			while ((SampleDate - Tau - UZtime < DR) && j != StopCriteria)
+			while ((DateLookup < DR) && j != StopCriteria)
 			{
 				j = j - StepInc;
-				DR = DateRange->array[j];
+				DR = round(1e6*DateRange->array[j]) / 1e6;
 			}
 			Cin = TracerRange->array[j];
 			Result = Cin * exp(-Lambda2 * UZtime) * (1 - exp(-Lambda2 * Tau));
@@ -1659,16 +1664,16 @@ __declspec(dllexport) double WINAPI PFM(
 		{
 			Lambda2 = Lambda;
 		}
-		if (SampleDate - Tau - UZtime < DateRange->array[StopCriteria])
+		if (DateLookup < DateRange->array[StopCriteria])
 		{
 			Result = TracerRange->array[StopCriteria] * exp(-Lambda2 * UZtime) * exp(-Lambda * Tau);
 		}
 		else
 		{
-			while ((SampleDate - Tau - UZtime < DR) && j != StopCriteria)
+			while ((DateLookup < DR) && j != StopCriteria)
 			{
 				j = j - StepInc;
-				DR = DateRange->array[j];
+				DR = round(1e6*DateRange->array[j]) / 1e6;
 			}
 			Cin = TracerRange->array[j];
 			Result = Cin * exp(-Lambda2 * UZtime) * exp(-Lambda * Tau);
@@ -1696,7 +1701,7 @@ __declspec(dllexport) double WINAPI EMM(FP DateRange[], FP TracerRange[], double
 						double Lambda, double UZtime, LPXLOPER12 HeliumThree, LPXLOPER12 InitialTrit, LPXLOPER12 TritInitialTritRatio)
 {
 	double Result=0.0;
-	double DR, Cin; // pointers to Date Range and Tracer Input
+	double DR, Cin, DateLookup; // pointers to Date Range and Tracer Input
 	double TauRes, n=1.0, EndDate, EMM1=0.0, CinHe3, EMMnoDecay=0.0, TimeIncrement, MaxDate;
 	double EMMhalf1=0.0, EMMhalf2=0.0, Multiplier, MinAge, MaxAge, EMMnd1=0.0, EMMnd2=0.0, Lambda2;
 	//bool TorF; // pointer to boolean values
@@ -1730,11 +1735,12 @@ __declspec(dllexport) double WINAPI EMM(FP DateRange[], FP TracerRange[], double
 		StopCriteria = j;
 		j = 0;
 	}
-	DR = DateRange->array[j];
-	while ((DR >= EndDate - MinAge) && j != StopCriteria)
+	DR = round(1e6*DateRange->array[j]) / 1e6;
+	DateLookup = round(1e6*(EndDate - MinAge)) / 1e6;
+	while ((DR >= DateLookup) && j != StopCriteria)
 	{
 		j = j - StepInc;
-		DR = DateRange->array[j];
+		DR = round(1e6*DateRange->array[j]) / 1e6;
 	}
 	Cin = TracerRange->array[j];
 	if (Cin == 0 && j == StopCriteria)
@@ -1762,10 +1768,11 @@ __declspec(dllexport) double WINAPI EMM(FP DateRange[], FP TracerRange[], double
 		{		
 			EMMhalf1 = EMMhalf2;
 			MaxAge = MinAge + i * TimeIncrement;
-			while ((EndDate - MaxAge < DR) && j != StopCriteria)
+			DateLookup = round(1e6*(EndDate - MaxAge)) / 1e6;
+			while ((DateLookup < DR) && j != StopCriteria)
 			{
 				j = j - StepInc;
-				DR = DateRange->array[j];
+				DR = round(1e6*DateRange->array[j]) / 1e6;
 				Cin = TracerRange->array[j];
 				if (Cin == 0 && j == StopCriteria)
 				{
@@ -1810,10 +1817,11 @@ __declspec(dllexport) double WINAPI EMM(FP DateRange[], FP TracerRange[], double
 		{
 			EMM1 = Result;
 			MaxAge = MinAge + i * TimeIncrement;
-			while ((EndDate - MaxAge < DR) && j != StopCriteria)
+			DateLookup = round(1e6*(EndDate - MaxAge)) / 1e6;
+			while ((DateLookup < DR) && j != StopCriteria)
 			{
 				j = j - StepInc;
-				DR = DateRange->array[j];
+				DR = round(1e6*DateRange->array[j]) / 1e6;
 				Cin = TracerRange->array[j];
 				if (Cin == 0 && j == StopCriteria)
 				{
@@ -1857,11 +1865,11 @@ __declspec(dllexport) double WINAPI EMM(FP DateRange[], FP TracerRange[], double
 		{
 			EMMhalf1 = EMMhalf2;
 			MaxAge = MinAge + i * TimeIncrement;
-			MaxDate = EndDate - i * TimeIncrement;
+			MaxDate = round(1e6*(EndDate - i * TimeIncrement)) / 1e6;
 			while (MaxDate < DR && j != StopCriteria)
 			{
 				j = j - StepInc;
-				DR = DateRange->array[j];
+				DR = round(1e6*DateRange->array[j]) / 1e6;
 				Cin = TracerRange->array[j];
 				if (Cin == 0 && j == StopCriteria)
 				{
@@ -2202,7 +2210,7 @@ __declspec(dllexport) double WINAPI PEM(FP DateRange[], FP TracerRange[], double
 	//
 	MinDate = SampleDate - BeginAge; //Age at Z star
 	MaxDate = floor (MinDate) + (floor ((MinDate - floor (MinDate)) / TimeIncrement)) * TimeIncrement;
-	EndDate = MaxDate;
+	EndDate = round(1e6*MaxDate) / 1e6;
 	MinAge = SampleDate - MinDate;
 	MaxAge = SampleDate - MaxDate;
 	//
@@ -2215,11 +2223,11 @@ __declspec(dllexport) double WINAPI PEM(FP DateRange[], FP TracerRange[], double
 		StopCriteria = j;
 		j = 0;
 	}
-	DR = DateRange->array[j];
+	DR = round(1e6*DateRange->array[j]) / 1e6;
 	while ((DR >= EndDate) && j != StopCriteria)
 	{
 		j = j - StepInc;
-		DR = DateRange->array[j];
+		DR = round(1e6*DateRange->array[j]) / 1e6;
 	}
 	Cin = TracerRange->array[j];
 	if (Cin == 0 && j == StopCriteria)
@@ -2245,11 +2253,11 @@ __declspec(dllexport) double WINAPI PEM(FP DateRange[], FP TracerRange[], double
 		{		
 			PEMhalf1 = PEMhalf2;
 			MaxAge = MinAge + i * TimeIncrement;
-			MaxDate = EndDate - i * TimeIncrement;
+			MaxDate = round(1e6*(EndDate - i * TimeIncrement)) / 1e6;
 			while ((MaxDate < DR) && j != StopCriteria)
 			{
 				j = j - StepInc;
-				DR = DateRange->array[j];
+				DR = round(1e6*DateRange->array[j]) / 1e6;
 				Cin = TracerRange->array[j];
 				if (Cin == 0 && j == StopCriteria)
 				{
@@ -2274,11 +2282,11 @@ __declspec(dllexport) double WINAPI PEM(FP DateRange[], FP TracerRange[], double
 		{
 			PEMhalf1 = PEMhalf2;
 			MaxAge = EndAge;
-			MaxDate = EndDate - i * TimeIncrement;
+			MaxDate = round(1e6*(EndDate - i * TimeIncrement)) / 1e6;
 			while ((MaxDate < DR) && j != StopCriteria)
 			{
 				j = j - StepInc;
-				DR = DateRange->array[j];
+				DR = round(1e6*DateRange->array[j]) / 1e6;
 				Cin = TracerRange->array[j];
 				if (Cin == 0 && j == StopCriteria)
 				{
@@ -2316,11 +2324,11 @@ __declspec(dllexport) double WINAPI PEM(FP DateRange[], FP TracerRange[], double
 		{
 			PEM1 = Result;
 			MaxAge = MinAge + i * TimeIncrement;
-			MaxDate = EndDate - i * TimeIncrement;
+			MaxDate = round(1e6*(EndDate - i * TimeIncrement)) / 1e6;
 			while ((MaxDate < DR) && j != StopCriteria)
 			{
 				j = j - StepInc;
-				DR = DateRange->array[j];
+				DR = round(1e6*DateRange->array[j]) / 1e6;
 				Cin = TracerRange->array[j];
 				if (Cin == 0 && j == StopCriteria)
 				{
@@ -2347,11 +2355,11 @@ __declspec(dllexport) double WINAPI PEM(FP DateRange[], FP TracerRange[], double
 		{
 			PEM1 = Result;
 			MaxAge = EndAge;
-			MaxDate = EndDate - i * TimeIncrement;
+			MaxDate = round(1e6*(EndDate - i * TimeIncrement)) / 1e6;
 			while ((MaxDate < DR) && j != StopCriteria)
 			{
 				j = j - StepInc;
-				DR = DateRange->array[j];
+				DR = round(1e6*DateRange->array[j]) / 1e6;
 				Cin = TracerRange->array[j];
 				if (Cin == 0 && j == StopCriteria)
 				{
@@ -2387,11 +2395,11 @@ __declspec(dllexport) double WINAPI PEM(FP DateRange[], FP TracerRange[], double
 		{
 			PEMhalf1 = PEMhalf2;
 			MaxAge = MinAge + i * TimeIncrement;
-			MaxDate = EndDate - i * TimeIncrement;
+			MaxDate = round(1e6*(EndDate - i * TimeIncrement)) / 1e6;
 			while ((MaxDate < DR) && j != StopCriteria)
 			{
 				j = j - StepInc;
-				DR = DateRange->array[j];
+				DR = round(1e6*DateRange->array[j]) / 1e6;
 				Cin = TracerRange->array[j];
 				if (Cin == 0 && j == StopCriteria)
 				{
@@ -2415,11 +2423,11 @@ __declspec(dllexport) double WINAPI PEM(FP DateRange[], FP TracerRange[], double
 		{
 			PEMhalf1 = PEMhalf2;
 			MaxAge = EndAge;
-			MaxDate = EndDate - i * TimeIncrement;
+			MaxDate = round(1e6*(EndDate - i * TimeIncrement)) / 1e6;
 			while ((MaxDate < DR) && j != StopCriteria)
 			{
 				j = j - StepInc;
-				DR = DateRange->array[j];
+				DR = round(1e6*DateRange->array[j]) / 1e6;
 				Cin = TracerRange->array[j];
 				if (Cin == 0 && j == StopCriteria)
 				{
@@ -2636,7 +2644,7 @@ __declspec(dllexport) double WINAPI EPM(
 						double Lambda, double EPMratio, double UZtime, LPXLOPER12 HeliumThree, LPXLOPER12 InitialTrit, LPXLOPER12 TritInitialTritRatio)
 {
 	double Result;
-	double DR, Cin; // pointers to Date Range and Tracer Input
+	double DR, Cin, DateLookup; // pointers to Date Range and Tracer Input
 	double n, EndDate, EPM1, CinHe3, EPMnoDecay, TimeIncrement;
 	double EPMhalf1, EPMhalf2, Multiplier, MinAge, MaxAge, EPMnd1, EPMnd2, Lambda2;
 	//bool TorF; // pointer to boolean values
@@ -2671,11 +2679,12 @@ __declspec(dllexport) double WINAPI EPM(
 		StopCriteria = j;
 		j = 0;
 	}
-	DR = DateRange->array[j];
-	while ((DR >= EndDate - MinAge) && j != StopCriteria)
+	DR = round(1e6*DateRange->array[j])/1e6;
+	DateLookup = round(1e6*(EndDate - MinAge))/1e6;
+	while ((DR >= DateLookup) && j != StopCriteria)
 	{
 		j = j - StepInc;
-		DR = DateRange->array[j];
+		DR = round(1e6*DateRange->array[j]) / 1e6;
 	}
 	Cin = TracerRange->array[j];
 	if (Cin == 0 && j == StopCriteria)
@@ -2706,10 +2715,11 @@ __declspec(dllexport) double WINAPI EPM(
 		{		
 			EPMhalf1 = EPMhalf2;
 			MaxAge = MinAge + i * TimeIncrement;
-			while ((EndDate - MaxAge < DR) && j != StopCriteria)
+			DateLookup = round(1e6*(EndDate - MaxAge)) / 1e6;
+			while ((DateLookup < DR) && j != StopCriteria)
 			{
 				j = j - StepInc;
-				DR = DateRange->array[j];
+				DR = round(1e6*DateRange->array[j]) / 1e6;
 				Cin = TracerRange->array[j];
 				if (Cin == 0 && j == StopCriteria)
 				{
@@ -2753,10 +2763,11 @@ __declspec(dllexport) double WINAPI EPM(
 		{
 			EPM1 = Result;
 			MaxAge = MinAge + i * TimeIncrement;
-			while ((EndDate - MaxAge < DR) && j != StopCriteria)
+			DateLookup = trunc(1e6*(EndDate - MaxAge)) / 1e6;
+			while ((DateLookup < DR) && j != StopCriteria)
 			{
 				j = j - StepInc;
-				DR = DateRange->array[j];
+				DR = round(1e6*DateRange->array[j]) / 1e6;
 				Cin = TracerRange->array[j];
 				if (Cin == 0 && j == StopCriteria)
 				{
@@ -2799,10 +2810,11 @@ __declspec(dllexport) double WINAPI EPM(
 		{
 			EPMhalf1 = EPMhalf2;
 			MaxAge = MinAge + i * TimeIncrement;
-			while ((EndDate - MaxAge < DR) && j != StopCriteria)
+			DateLookup = trunc(1e6*(EndDate - MaxAge)) / 1e6;
+			while ((DateLookup < DR) && j != StopCriteria)
 			{
 				j = j - StepInc;
-				DR = DateRange->array[j];
+				DR = round(1e6*DateRange->array[j]) / 1e6;
 				Cin = TracerRange->array[j];
 				if (Cin == 0 && j == StopCriteria)
 				{
@@ -2908,7 +2920,7 @@ __declspec(dllexport) double WINAPI GAM(
 						double Lambda, double Alpha, double UZtime, bool HeliumThree, bool InitialTrit, bool TritInitialTritRatio)
 {
 	
-	double DR, Cin, Beta; // pointers to Date Range and Tracer Input
+	double DR, Cin, DateLookup, Beta; // pointers to Date Range and Tracer Input
 	double EndDate, GAM1, CinHe3, GAMnoDecay, TimeIncrement, UZdecay, MaxDecay;
 	double GAMhalf1, GAMhalf2, MinAge, MaxAge, GAMnd1, GAMnd2, Lambda2, RtnRslt=0.0;
 	//bool TorF; // pointer to boolean values
@@ -2944,11 +2956,12 @@ __declspec(dllexport) double WINAPI GAM(
 		StopCriteria = j;
 		j = 0;
 	}
-	DR = DateRange->array[j];
-	while ((DR >= EndDate - MinAge) && j != StopCriteria)
+	DR = round(1e6*DateRange->array[j])/1e6;
+	DateLookup = round(1e6*(EndDate - MinAge)) / 1e6;
+	while ((DR >= DateLookup) && j != StopCriteria)
 	{
 		j = j - StepInc;
-		DR = DateRange->array[j];
+		DR = round(1e6*DateRange->array[j]) / 1e6;
 	}
 	Cin = TracerRange->array[j];
 	if (Cin == 0 && j == StopCriteria)
@@ -2984,10 +2997,11 @@ __declspec(dllexport) double WINAPI GAM(
 			GAMhalf1 = GAMhalf2;
 			MaxAge = MinAge + i * TimeIncrement;
 			MaxDecay = MaxAge-TimeIncrement/2;
-			while ((EndDate - MaxAge < DR) && j != StopCriteria)
+			DateLookup = round(1e6*(EndDate - MaxAge)) / 1e6;
+			while ((DateLookup < DR) && j != StopCriteria)
 			{
 				j = j - StepInc;
-				DR = DateRange->array[j];
+				DR = round(1e6*DateRange->array[j]) / 1e6;
 				Cin = TracerRange->array[j];
 				if (Cin == 0 && j == StopCriteria)
 				{
@@ -3041,10 +3055,11 @@ __declspec(dllexport) double WINAPI GAM(
 			GAM1 = RtnRslt;
 			MaxAge = MinAge + i * TimeIncrement;
 			MaxDecay = MaxAge-TimeIncrement/2;
-			while ((EndDate - MaxAge < DR) && j != StopCriteria)
+			DateLookup = round(1e6*(EndDate - MaxAge)) / 1e6;
+			while ((DateLookup < DR) && j != StopCriteria)
 			{
 				j = j - StepInc;
-				DR = DateRange->array[j];
+				DR = round(1e6*DateRange->array[j]) / 1e6;
 				Cin = TracerRange->array[j];
 				if (Cin == 0 && j == StopCriteria)
 				{
@@ -3095,10 +3110,11 @@ __declspec(dllexport) double WINAPI GAM(
 			GAMhalf1 = GAMhalf2;
 			MaxAge = MinAge + i * TimeIncrement;
 			MaxDecay = MaxAge - TimeIncrement / 2;
-			while ((EndDate - MaxAge < DR) && j != StopCriteria)
+			DateLookup = round(1e6*(EndDate - MaxAge)) / 1e6;
+			while ((DateLookup < DR) && j != StopCriteria)
 			{
 				j = j - StepInc;
-				DR = DateRange->array[j];
+				DR = round(1e6*DateRange->array[j]) / 1e6;
 				Cin = TracerRange->array[j];
 				if (Cin == 0 && j == StopCriteria)
 				{
@@ -3473,7 +3489,7 @@ __declspec(dllexport) double WINAPI DM(
 						double Lambda, double DP, double UZtime, LPXLOPER12 HeliumThree, LPXLOPER12 InitialTrit, LPXLOPER12 TritInitialTritRatio)
 {
 	double Result = 0.0;
-	double DR, Cin; // pointers to Date Range and Tracer Input
+	double DR, Cin, DateLookup; // pointers to Date Range and Tracer Input
 	double EndDate, CinHe3, DMnoDecay, TimeIncrement, Lambda2, MaxAge=0.0, Integral, IntegralNoDecay, Change=1000, DMprev = 0.0, CummFrac=0.0;
 	__int32 i,j, nIters, StepInc, StopCriteria;
 	nIters = 1000000;
@@ -3511,7 +3527,7 @@ __declspec(dllexport) double WINAPI DM(
 		StopCriteria = j;
 		j = 0;
 	}
-	DR = DateRange->array[j];
+	DR = round(1e6*DateRange->array[j]) / 1e6;
 	//i=2;
 	//MaxAge = i * TimeIncrement;
     if (HeliumThree->val.xbool == TRUE)
@@ -3528,10 +3544,11 @@ __declspec(dllexport) double WINAPI DM(
 		{
             DMprev = Result;
 			MaxAge = i * TimeIncrement;
-            while ((EndDate - MaxAge) < DR && j != StopCriteria)
+			DateLookup = round(1e6*(EndDate - MaxAge)) / 1e6;
+            while (DateLookup < DR && j != StopCriteria)
 			{
 				j = j - StepInc;
-				DR = DateRange->array[j];
+				DR = round(1e6*DateRange->array[j]) / 1e6;
 				Cin = TracerRange->array[j];
 				if (Cin == 0 && j == StopCriteria)
 				{
@@ -3566,10 +3583,11 @@ __declspec(dllexport) double WINAPI DM(
 		{
 			DMprev = DMnoDecay;
 			MaxAge = i * TimeIncrement;
-            while ((EndDate - MaxAge) < DR && j != StopCriteria)
+			DateLookup = round(1e6*(EndDate - MaxAge)) / 1e6;
+            while (DateLookup < DR && j != StopCriteria)
 			{
 				j = j - StepInc;
-				DR = DateRange->array[j];
+				DR = round(1e6*DateRange->array[j]) / 1e6;
 				Cin = TracerRange->array[j];
 				if (Cin == 0 && j == StopCriteria)
 				{
@@ -3604,10 +3622,11 @@ __declspec(dllexport) double WINAPI DM(
 		{
 			DMprev = Result;
 			MaxAge = i * TimeIncrement;
-            while ((EndDate - MaxAge) < DR && j != StopCriteria)
+			DateLookup = round(1e6*(EndDate - MaxAge)) / 1e6;
+            while (DateLookup < DR && j != StopCriteria)
 			{
 				j = j - StepInc;
-				DR = DateRange->array[j];
+				DR = round(1e6*DateRange->array[j]) / 1e6;
 				Cin = TracerRange->array[j];
 				if (Cin == 0 && j == StopCriteria)
 				{
@@ -4572,7 +4591,7 @@ __declspec(dllexport) double WINAPI FDM(
 						double Alpha, double DP, double UZtime, LPXLOPER12 HeliumThree, LPXLOPER12 InitialTrit, LPXLOPER12 TritInitialTritRatio)
 {
 	double Result = 1e-012;
-	double DR, Cin; // pointers to Date Range and Tracer Input
+	double DR, Cin, DateLookup; // pointers to Date Range and Tracer Input
 	double EndDate, FDMprev, CinHe3, FDMnoDecay, TimeIncrement, Lambda2, MaxAge=0.0, Integral, IntegralNoDecay, Lambda0=0.0, UZt=0.0;
 	__int32 i,j, nIters, StepInc, StopCriteria;
 	nIters = 2000000;
@@ -4604,7 +4623,7 @@ __declspec(dllexport) double WINAPI FDM(
 		StopCriteria = j;
 		j = 0;
 	}
-	DR = DateRange->array[j];
+	DR = round(1e6*DateRange->array[j]) / 1e6;
     if (HeliumThree->val.xbool == TRUE)
 	{
         if (Lambda == 0.0)
@@ -4619,10 +4638,11 @@ __declspec(dllexport) double WINAPI FDM(
 		{
             FDMprev = Result;
 			MaxAge = i * TimeIncrement;
-            while ((EndDate - MaxAge) < DR && j != StopCriteria)
+			DateLookup = round(1e6*(EndDate - MaxAge)) / 1e6;
+            while (DateLookup < DR && j != StopCriteria)
 			{
 				j = j - StepInc;
-				DR = DateRange->array[j];
+				DR = round(1e6*DateRange->array[j]) / 1e6;
 				Cin = TracerRange->array[j];
 				if (Cin == 0 && j == StopCriteria)
 				{
@@ -4656,10 +4676,11 @@ __declspec(dllexport) double WINAPI FDM(
 		{
             FDMprev = FDMnoDecay;
 			MaxAge = i * TimeIncrement;
-            while ((EndDate - MaxAge) < DR && j != StopCriteria)
+			DateLookup = round(1e6*(EndDate - MaxAge)) / 1e6;
+            while (DateLookup < DR && j != StopCriteria)
 			{
 				j = j - StepInc;
-				DR = DateRange->array[j];
+				DR = round(1e6*DateRange->array[j]) / 1e6;
 				Cin = TracerRange->array[j];
 				if (Cin == 0 && j == StopCriteria)
 				{
@@ -4695,10 +4716,11 @@ __declspec(dllexport) double WINAPI FDM(
 		{
             FDMprev = Result;
 			MaxAge = i * TimeIncrement;
-            while ((EndDate - MaxAge) < DateRange->array[j] && j != StopCriteria)
+			DateLookup = round(1e6*(EndDate - MaxAge)) / 1e6;
+            while (DateLookup < DR && j != StopCriteria)
 			{
 				j = j - StepInc;
-				//DR = DateRange->array[j];
+				DR = round(1e6*DateRange->array[j]) / 1e6;
 				//Cin = TracerRange->array[j];
 				if (TracerRange->array[j] == 0 && j == StopCriteria)
 				{
