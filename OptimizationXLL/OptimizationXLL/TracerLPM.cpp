@@ -256,7 +256,7 @@ __declspec(dllexport) LPXLOPER12 WINAPI SolveNewtonMethod(LPXLOPER12 lxMeasTrace
 	std::clock_t start;
 	start = std::clock();
 
-	double HiChiSqr, ChiSqr, PrevChiSqr, Tol, PrevNormV, NormV, NormV_Diff, ScaleFact, Mult;
+	double HiChiSqr, ChiSqr=0.0, PrevChiSqr, Tol, PrevNormV, NormV, NormV_Diff, ScaleFact, Mult;
 	double ModelArgs[10] = { 0,0,0,0,0,0,0,0,0,0 }, DoF, test, dLevFactor, ChiSqrDiff, Mean, StdDev;
 	int nIters = 0, k, j, i, HiTracer, n, TracerNum = 0, SimCnt = 0, size, MaxIters;
 	MatrixXd LJo, InitTracerOutput, Result, ATA, ATD, Jo, JoT, Cov, ATA_Cov;
