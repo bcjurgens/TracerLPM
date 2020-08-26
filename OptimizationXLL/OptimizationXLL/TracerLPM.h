@@ -38,7 +38,7 @@ using namespace boost::math;
 //
 
 
-static const double Tol= 1E-06;        // Stopping criteria for LPM output 
+static const double Tol= 1E-08;        // Stopping criteria for LPM output 
 static const double Udecay = 1.19E-13;
 static const double THdecay = 2.88E-14;
 static const double PI = 3.1415926535897932384626433832795028841971693993751;
@@ -118,6 +118,7 @@ public:
 			VectorXd UZtime;
 			vector<int> UZtimeCond;
 			vector<int> CalcCond;
+			double TimeIncrement;
 			struct TracerComp_2
 			{
 				MatrixXd Val;
@@ -278,7 +279,7 @@ LPM::LPM(int ModelNum, LPXLOPER12 lxMeasTracerConcs, LPXLOPER12 lxFitParmIndexes
 			for(i=0;i<size;i++)
 			{
 				px = lxSampleDates->val.array.lparray + i;
-				obj.Sample.SampleDates(i)=px->val.num;
+				obj.Sample.SampleDates(i)= round(1e6*px->val.num) / 1e6;
 			}
 		}
 	
@@ -495,7 +496,10 @@ LPM::LPM(int ModelNum, LPXLOPER12 lxMeasTracerConcs, LPXLOPER12 lxFitParmIndexes
 		size=lxdateRange->rows;
 		obj.Tracer.DateRange.resize(size);    //date range
 		for(i=0;i<size;i++)
-			obj.Tracer.DateRange(i)=lxdateRange->array[i];
+			obj.Tracer.DateRange(i)=round(1e6*lxdateRange->array[i]) / 1e6;
+		obj.Tracer.TimeIncrement = abs(obj.Tracer.DateRange(1) - obj.Tracer.DateRange(0));
+		if (abs(obj.Tracer.DateRange(obj.Tracer.DateRange.rows() - 1) - obj.Tracer.DateRange(obj.Tracer.DateRange.rows() - 2)) < obj.Tracer.TimeIncrement)
+			obj.Tracer.TimeIncrement = abs(obj.Tracer.DateRange(obj.Tracer.DateRange.rows() - 1) - obj.Tracer.DateRange(obj.Tracer.DateRange.rows() - 2));
 
 		//double X;
 		rows=lxTracerInputRange->val.array.rows;		//tracer input range
@@ -659,7 +663,7 @@ VectorXd LPM::DM_Internal(double Tau, double SampleDate, double DP)
 	double DMprev[10], EndDates[10];
 	double DR, Cin; 
 	double EndDate=0,  DMnoDecay=0.0, TimeIncrement, MaxAge=0.0, Integral=0.0,gtZeroLam=0.0, CummFrac=0.0, InitTritResult=0.0;
-	int i,j, nIters=1000000, StepInc, StopCriteria, NameCheck=0, Js[10];
+	int i,j, TotalTime=5000000, StepInc, StopCriteria, NameCheck=0, Js[10];
 	int TracerCount=0, CheckComplete=0, k, TracerNum=0;	
 	
 	TracerNum=obj.Tracer.Tracers.size();
@@ -667,17 +671,14 @@ VectorXd LPM::DM_Internal(double Tau, double SampleDate, double DP)
 	
 	if(obj.Tracer.DateRange.rows() == 1 || ( obj.Tracer.TracerInputRange.rows() == 1) || Tau ==0 || SampleDate==0 || DP == 0) 
 		return Result;
-    if (DP < 1.0)
-        TimeIncrement = 1.0 / 12.0;
-    else
-        TimeIncrement = 1.0 / 12.0 / 2.0;
-    if (Tau >= 100.) // reset time increment and end date for large tau
-	{
-        TimeIncrement = fabs(obj.Tracer.DateRange(1)-obj.Tracer.DateRange(0)); //MinTimeInc(DateRange);
-		if (fabs(obj.Tracer.DateRange(obj.Tracer.DateRange.rows() - 1)-obj.Tracer.DateRange(obj.Tracer.DateRange.rows() - 2)) < TimeIncrement)
-			TimeIncrement = fabs(obj.Tracer.DateRange(obj.Tracer.DateRange.rows() - 1)-obj.Tracer.DateRange(obj.Tracer.DateRange.rows() - 2));
-	}
 
+	TimeIncrement = 1.0 / 12.0;
+	if (Tau >= 100.) // reset time increment and end date for large tau
+	{
+		TimeIncrement = obj.Tracer.TimeIncrement;
+	}
+	else if (Tau >= 50000.)
+		TimeIncrement = 5;
     j = obj.Tracer.DateRange.rows()-1;
 	StepInc = 1;
 	StopCriteria = 0;
@@ -689,12 +690,12 @@ VectorXd LPM::DM_Internal(double Tau, double SampleDate, double DP)
 	}
 	DR = obj.Tracer.DateRange(j);
 	TracerParseDM(EndDate,TimeIncrement,TracerCount,SampleDate,EndDates,Js,j);
-
-	for (i = 1; i<= nIters; i++)
+	i = 1;
+	do
 	{
 		MaxAge = i * TimeIncrement;
 		gtZeroLam = LPM::gt_DMint(MaxAge - TimeIncrement, MaxAge, Tau, 0.0, DP);
-		CummFrac+=gtZeroLam;
+		//CummFrac+=gtZeroLam;
 		CheckComplete=0;
 		//loop through tracers
 		for(k=0;k<TracerNum;k++)
@@ -738,21 +739,22 @@ VectorXd LPM::DM_Internal(double Tau, double SampleDate, double DP)
 						Result(k)=Result(obj.k1)/Result(obj.k2);
 					break;
 				case 4:
-					Result(k) += Cin  * Integral * MaxAge;
+					Result(k) += Cin  * gtZeroLam * (MaxAge - TimeIncrement/2);
 					break;
 				}
-				if (MaxAge > Tau && Result(k) > 0) //This has to be outer if,then; otherwise Overflow occurs because of division by zero
+				if (MaxAge > Tau) //This has to be outer if,then; otherwise Overflow occurs because of division by zero
 				{
-					if ((Result(k) - DMprev[k]) / Result(k) < Tol)
+					if (Result(k) == 0)
+						CheckComplete++;
+					else if ((Result(k) - DMprev[k]) / Result(k) < Tol)
 						CheckComplete++;
 				}
 			}
 			else //if (Cin == 0 || Js[k] == StopCriteria)
 				CheckComplete++;
 		}
-		if(CheckComplete==TracerCount)
-			return Result;
-	}
+		i++;
+	} while (MaxAge < TotalTime && CheckComplete < TracerCount);
 	return Result;
 }
 
@@ -761,7 +763,7 @@ VectorXd LPM::FDM_Internal(double Tau, double Alpha, double SampleDate, double D
 	double DMprev[10], EndDates[10];
 	double DR, Cin; // pointers to Date Range and Tracer Input
 	double EndDate=0, DMnoDecay=0.0, TimeIncrement, MaxAge=0.0, Integral=0.0,gtZeroLam=0.0, CummFrac=0.0, InitTritResult=0.0;
-	int i,j, nIters, StepInc, StopCriteria, NameCheck=0, Js[10];
+	int i,j,TotalTime = 5000000, StepInc, StopCriteria, NameCheck=0, Js[10];
 	int TracerCount=0, CheckComplete=0, k, TracerNum=0;
 
 	TracerNum=obj.Tracer.Tracers.size();
@@ -771,16 +773,13 @@ VectorXd LPM::FDM_Internal(double Tau, double Alpha, double SampleDate, double D
 	if(obj.Tracer.DateRange.rows() == 1 || ( obj.Tracer.TracerInputRange.cols() == 1 || obj.Tracer.TracerInputRange.rows() == 1) || Tau ==0 || SampleDate==0 || DP == 0 || Alpha==0) 
 		return Result;
 	
-	nIters = 1000000;
-
 	TimeIncrement = 1.0 / 12.0;
 	if (Tau >= 100.) // reset time increment and end date for large tau
 	{
-        TimeIncrement = abs(obj.Tracer.DateRange(1)-obj.Tracer.DateRange(0));
-		if (abs(obj.Tracer.DateRange(obj.Tracer.DateRange.rows() - 1)-obj.Tracer.DateRange(obj.Tracer.DateRange.rows() - 2)) < TimeIncrement)
-			TimeIncrement = abs(obj.Tracer.DateRange(obj.Tracer.DateRange.rows() - 1)-obj.Tracer.DateRange(obj.Tracer.DateRange.rows() - 2));
+		TimeIncrement = obj.Tracer.TimeIncrement;
 	}
-
+	else if (Tau >= 50000.)
+		TimeIncrement = 5;
     j = obj.Tracer.DateRange.rows()-1;
 	StepInc = 1;
 	StopCriteria = 0;
@@ -794,7 +793,8 @@ VectorXd LPM::FDM_Internal(double Tau, double Alpha, double SampleDate, double D
 	// Loop through obj.Tracer.Tracers and count how many zero lambdas
 	TracerParseDM(EndDate,TimeIncrement,TracerCount,SampleDate,EndDates,Js,j);
 
-	for (i = 1; i<= nIters; i++)
+	i = 1;
+	do
 	{
 		MaxAge = i * TimeIncrement;
 		gtZeroLam = gt_FDMint(MaxAge - TimeIncrement, MaxAge, Alpha, Tau, DP,0);
@@ -845,20 +845,19 @@ VectorXd LPM::FDM_Internal(double Tau, double Alpha, double SampleDate, double D
 					Result(k) += Cin * Integral * MaxAge;
 					break;
 				}
-				if (MaxAge > Tau && Result(k) > 0) //This has to be outer if,then; otherwise Overflow occurs because of division by zero
+				if (MaxAge > Tau) //This has to be outer if,then; otherwise Overflow occurs because of division by zero
 				{
-					if ((Result(k) - DMprev[k]) / Result(k) < Tol)
-					{
+					if (Result(k) == 0)
 						CheckComplete++;
-					}
+					else if ((Result(k) - DMprev[k]) / Result(k) < Tol)
+						CheckComplete++;
 				}
 			}
 			else //if (Cin == 0 || Js[k] == StopCriteria)
 				CheckComplete++;
 		}
-		if(CheckComplete==TracerCount)
-			return Result;
-	}
+		i++;
+	} while (MaxAge < TotalTime && CheckComplete < TracerCount);
 	return Result;
 }
 
@@ -1217,9 +1216,11 @@ VectorXd LPM::PEM_Int(double Tau, double PEM_Uratio, double PEM_Lratio, double S
 					Result(k) += Cin  * Multiplier * (PEMhalf1[k] - PEMhalf2[k]) * MaxAge;
 					break;
 				}
-				if (MaxAge > Tau && Result(k) > 0) //This has to be outer if,then; otherwise Overflow occurs because of division by zero
+				if (MaxAge > Tau) //This has to be outer if,then; otherwise Overflow occurs because of division by zero
 				{
-					if ((Result(k) - PEMprev[k]) / Result(k) < Tol)
+					if (Result(k) == 0)
+						CheckComplete++;
+					else if ((Result(k) - PEMprev[k]) / Result(k) < Tol)
 						CheckComplete++;
 				}
 			}
@@ -1443,10 +1444,12 @@ VectorXd LPM::GAM_Int(double Tau, double SampleDate, double Alpha)
 					default:
 						break;
 				}
-				if (MaxAge > Tau && Result(k) > 0) //This has to be outer if,then; otherwise Overflow occurs because of division by zero
+				if (MaxAge > Tau) //This has to be outer if,then; otherwise Overflow occurs because of division by zero
 				{
-					if ((Result(k) - GAMprev[k]) / Result(k) < Tol)
-						CheckComplete++;					
+					if (Result(k) == 0)
+						CheckComplete++;
+					else if ((Result(k) - GAMprev[k]) / Result(k) < Tol)
+						CheckComplete++;
 				}
 			}
 			else //if (Cin == 0 || Js[k] == StopCriteria)
@@ -1611,10 +1614,12 @@ VectorXd LPM::EMM_Int(double Tau, double SampleDate)
 				}
 
 				//check only for first tracer \/
-				if (MaxAge > Tau && Result(k) > 0) //This has to be outer if,then; otherwise Overflow occurs because of division by zero
+				if (MaxAge > Tau) //This has to be outer if,then; otherwise Overflow occurs because of division by zero
 				{
-					if ((Result(k) - EMMprev[k]) / Result(k) < Tol)
-						CheckComplete++;					
+					if (Result(k) == 0)
+						CheckComplete++;
+					else if ((Result(k) - EMMprev[k]) / Result(k) < Tol)
+						CheckComplete++;
 				}
 			}
 			else //if (Cin == 0 || Js[k] == StopCriteria)
@@ -1656,7 +1661,7 @@ VectorXd LPM::EPM_Int(double Tau, double SampleDate, double EPMratio)
 	MaxAge = SampleDate - MaxDate;
 	EndDate = MinDate;
 
-	nIters = 2000000;
+	nIters = 20000000;
 	j = obj.Tracer.DateRange.rows() - 1;
 	StepInc = 1;
 	StopCriteria = 0;
@@ -1788,10 +1793,12 @@ VectorXd LPM::EPM_Int(double Tau, double SampleDate, double EPMratio)
 					}
 
 				//check only for first tracer \/
-				if (MaxAge > Tau && Result(k) > 0) //This has to be outer if,then; otherwise Overflow occurs because of division by zero
+				if (MaxAge > Tau) //This has to be outer if,then; otherwise Overflow occurs because of division by zero
 				{
-					if ((Result(k) - EPMprev[k]) / Result(k) < Tol)
-						CheckComplete++;					
+					if (Result(k) == 0)
+						CheckComplete++;
+					else if ((Result(k) - EPMprev[k]) / Result(k) < Tol)
+						CheckComplete++;
 				}
 			}
 			else //if (Cin == 0 || Js[k] == StopCriteria)
@@ -1939,6 +1946,7 @@ VectorXd LPM::d_dx_LPM_Model(double MeanAge, double ModelParm1, double ModelParm
 	n=obj.Sample.SampleDates.size();
 	Result.resize(obj.Sample.ActiveVals.sum());
 	ScaleFact = 1.0;
+	
 	k = 1;
 	do
 	{
@@ -1987,8 +1995,7 @@ VectorXd LPM::d_dx_LPM_Model(double MeanAge, double ModelParm1, double ModelParm
 
 			break;
 		case 2:  //MeanAge derivative
-			(MeanAge < 5) ? Delta = 0.01*ScaleFact : Delta = 0.5*ScaleFact;
-			//Delta = 0.01*ScaleFact;
+			(MeanAge < 1 || MeanAge >200)? Delta = MeanAge/200*ScaleFact : Delta = obj.Tracer.TimeIncrement/2*ScaleFact;
 			return1 = LPM_TracerOutput(MeanAge - (2 * Delta), ModelParm1, ModelParm2,
 				Fraction, MeanAge_2, ModelParm1_2, ModelParm2_2, DIC_1, DIC_2);
 			return2 = LPM_TracerOutput(MeanAge - Delta, ModelParm1, ModelParm2,
@@ -2032,7 +2039,8 @@ VectorXd LPM::d_dx_LPM_Model(double MeanAge, double ModelParm1, double ModelParm
 				Fraction + (2 * Delta), MeanAge_2, ModelParm1_2, ModelParm2_2, DIC_1, DIC_2);
 			break;
 		case 6: //Mean Age component 2 derivative
-			Delta = 0.01*ScaleFact;
+			(MeanAge_2 < 1 || MeanAge_2 >200) ? Delta = MeanAge_2/200*ScaleFact : Delta = obj.Tracer.TimeIncrement/2*ScaleFact;
+
 			return1 = LPM_TracerOutput(MeanAge, ModelParm1, ModelParm2,
 				Fraction, MeanAge_2 - (2 * Delta), ModelParm1_2, ModelParm2_2, DIC_1, DIC_2);
 			return2 = LPM_TracerOutput(MeanAge, ModelParm1, ModelParm2,
