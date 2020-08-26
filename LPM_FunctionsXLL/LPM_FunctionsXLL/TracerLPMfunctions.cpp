@@ -1370,7 +1370,7 @@ __declspec(dllexport) LPXLOPER12 WINAPI xlAddInManagerInfo12(LPXLOPER12 xAction)
 	return(LPXLOPER12) &xInfo;
 }
 
-static const double Tol= 1E-06;        // Stopping criteria for LPM output 
+static const double Tol= 1E-08;        // Stopping criteria for LPM output 
 static const double Udecay = 1.19E-13;
 static const double THdecay = 2.88E-14;
 static const double PI = 3.1415926535897932384626433832795028841971693993751;
@@ -1783,12 +1783,12 @@ __declspec(dllexport) double WINAPI EMM(FP DateRange[], FP TracerRange[], double
 			CinHe3 = Cin * exp(-Lambda2 * UZtime) * (1 - exp(-Lambda2 * (MaxAge - TimeIncrement / 2)));
 			EMMhalf2 = exp(-(MaxAge) / TauRes);
 			Result += CinHe3 * n * (EMMhalf1 - EMMhalf2);
-			if (MaxAge >= Tau && Result > 0)
+			if (MaxAge >= Tau)
 			{
-				if ((Result - EMM1) / Result < Tol)
-				{
+				if (Result == 0)
 					return Result;
-				}
+				else if ((Result - EMM1) / Result < Tol)
+					return Result;
 			}
 		}
 	}
@@ -1834,12 +1834,12 @@ __declspec(dllexport) double WINAPI EMM(FP DateRange[], FP TracerRange[], double
 			EMMhalf2 = exp(-MaxAge * ((1 / TauRes) + Lambda2));
 			Result += Cin * exp(-Lambda2 * UZtime) * Multiplier * (EMMhalf1 - EMMhalf2);
 			EMMhalf1 = EMMhalf2;
-			if (MaxAge >= Tau && Result > 0)
+			if (MaxAge >= Tau)
 			{
-				if ((Result - EMM1) / Result < Tol)
-				{
+				if (Result == 0)
 					break;
-				}
+				else if ((Result - EMM1) / Result < Tol)
+					break;
 			}
 		}
 		Result = Result / EMMnoDecay;
@@ -1879,12 +1879,12 @@ __declspec(dllexport) double WINAPI EMM(FP DateRange[], FP TracerRange[], double
 			EMM1 = Result;
 			EMMhalf2 = exp(-(MaxAge) * ((1 / TauRes) + Lambda));
 			Result += Cin * exp(-Lambda2 * UZtime) * Multiplier * (EMMhalf1 - EMMhalf2);
-			if (MaxAge >= Tau && Result > 0)
+			if (MaxAge >= Tau)
 			{
-				if ((Result - EMM1) / Result < Tol)
-				{
+				if (Result == 0)
 					return Result;
-				}
+				else if ((Result - EMM1) / Result < Tol)
+					return Result;
 			}
 		}
 	}
@@ -1938,13 +1938,13 @@ __declspec(dllexport) double WINAPI EMM_He4(
         MaxAge = i * TimeIncrement + MinAge;
         EMMhalf2 = exp(-MaxAge / TauRes);
         Result += Cin * MaxAge * n * (EMMhalf1 - EMMhalf2);
-        if (MaxAge >= Tau && Result > 0)
-			{
-				if ((Result - EMMold) / Result < Tol)
-				{
-					return Result;
-				}
-			}
+		if (MaxAge >= Tau)
+		{
+			if (Result == 0)
+				return Result;
+			else if ((Result - EMMold) / Result < Tol)
+				return Result;
+		}
 	}
 	return Result;
 }
@@ -2268,12 +2268,12 @@ __declspec(dllexport) double WINAPI PEM(FP DateRange[], FP TracerRange[], double
 			CinHe3 = Cin * exp(-Lambda2 * UZtime) * (1 - exp(-Lambda2 * ((MaxAge - UZtime) - TimeIncrement / 2)));
 			PEMhalf2 = exp(-(MaxAge - UZtime) / TauRes);
 			Result += CinHe3 * nS * (PEMhalf1 - PEMhalf2);
-			if (MaxAge >= Tau && Result > 0)
+			if (MaxAge >= Tau)
 			{
-				if ((Result - PEM1) / Result < Tol)
-				{
+				if (Result == 0)
 					return Result;
-				}
+				else if ((Result - PEM1) / Result < Tol)
+					return Result;
 			}
 		}
 		i++;
@@ -2341,12 +2341,12 @@ __declspec(dllexport) double WINAPI PEM(FP DateRange[], FP TracerRange[], double
 			PEMhalf2 = exp(-(MaxAge - UZtime) * ((1 / TauRes) + Lambda2));
 			Result += Cin * exp(-Lambda2 * UZtime) * Multiplier * (PEMhalf1 - PEMhalf2);
 			PEMhalf1 = PEMhalf2;
-			if (MaxAge >= Tau && Result > 0)
+			if (MaxAge >= Tau)
 			{
-				if ((Result - PEM1) / Result < Tol)
-				{
+				if (Result == 0)
 					break;
-				}
+				else if ((Result - PEM1) / Result < Tol)
+					break;
 			}
 		}
 		i++;
@@ -2409,12 +2409,12 @@ __declspec(dllexport) double WINAPI PEM(FP DateRange[], FP TracerRange[], double
 			PEM1 = Result;
 			PEMhalf2 = exp(-(MaxAge - UZtime) * ((1 / TauRes) + Lambda));
 			Result += Cin * exp(-Lambda2 * UZtime) * Multiplier * (PEMhalf1 - PEMhalf2);
-			if (MaxAge >= Tau && Result > 0)
+			if (MaxAge >= Tau)
 			{
-				if ((Result - PEM1) / Result < Tol)
-				{
+				if (Result == 0)
 					return Result;
-				}
+				else if ((Result - PEM1) / Result < Tol)
+					return Result;
 			}
 		}
 		i++;
@@ -2598,12 +2598,12 @@ __declspec(dllexport) double WINAPI PEM_He4(
 		PEMold = Result;
 		PEMhalf2 = exp(-MaxAge / TauRes);
 		Result += Cin * nS * MaxAge * (PEMhalf1 - PEMhalf2);
-		if (MaxAge >= Tau && Result > 0)
+		if (MaxAge >= Tau)
 		{
-			if ((Result - PEMold) / Result < Tol)
-			{
+			if (Result == 0)
 				return Result;
-			}
+			else if ((Result - PEMold) / Result < Tol)
+				return Result;
 		}
 	}
 	i++;
@@ -2730,12 +2730,12 @@ __declspec(dllexport) double WINAPI EPM(
 			CinHe3 = Cin * exp(-Lambda2 * UZtime) * (1 - exp(-Lambda2 * (MaxAge - TimeIncrement / 2)));
 			EPMhalf2 = exp(-MaxAge * n / Tau + n - 1.0);
 			Result += CinHe3 * (EPMhalf1 - EPMhalf2);
-			if (MaxAge >= Tau && Result > 0)
+			if (MaxAge >= Tau)
 			{
-				if ((Result - EPM1) / Result < Tol)
-				{
+				if (Result == 0)
 					return Result;
-				}
+				else if ((Result - EPM1) / Result < Tol)
+					return Result;
 			}
 		}
 	}
@@ -2824,12 +2824,12 @@ __declspec(dllexport) double WINAPI EPM(
 			EPM1 = Result;
 			EPMhalf2 = exp(-MaxAge * (n / Tau + Lambda) + n - 1.0);
 			Result += Cin * exp(-Lambda2 * UZtime) * Multiplier * (EPMhalf1 - EPMhalf2);
-			if (MaxAge >= Tau && Result > 0)
+			if (MaxAge >= Tau)
 			{
-				if ((Result - EPM1) / Result < Tol)
-				{
+				if (Result == 0)
 					return Result;
-				}
+				else if ((Result - EPM1) / Result < Tol)
+					return Result;
 			}
 		}
 	}
@@ -2844,7 +2844,7 @@ __declspec(dllexport) double WINAPI EPM_He4(
 	__int32 i, SimYears, nIters;
     
     n = EPMratio + 1;
-    SimYears = 1500000;
+    SimYears = 5000000;
     if (Tau < 100)
 	{
 		TimeIncrement = 1.0 / 12.0;
@@ -2857,7 +2857,7 @@ __declspec(dllexport) double WINAPI EPM_He4(
 		}
 		else
 		{
-			TimeIncrement = Tau / 1000;
+			TimeIncrement = 1; // Tau / 1000;
 		}
 	}
     MinAge = Tau * (1.0 - (1.0 / n));
@@ -2883,13 +2883,13 @@ __declspec(dllexport) double WINAPI EPM_He4(
         MaxAge = i * TimeIncrement + MinAge;
         EPMhalf2 = exp(-MaxAge * n / Tau + n - 1.0);
         Result += Cin * MaxAge * (EPMhalf1 - EPMhalf2);
-        if (MaxAge >= Tau && Result > 0)
-			{
-				if ((Result - EPMold) / Result < Tol)
-				{
-					return Result;
-				}
-			}
+        if (MaxAge >= Tau)
+		{
+			if (Result == 0)
+				return Result;
+			else if ((Result - EPMold) / Result < Tol)
+				return Result;
+		}
 	}
 	return Result;
 }
@@ -3014,12 +3014,12 @@ __declspec(dllexport) double WINAPI GAM(
 			
 			GAMhalf2 = ReturnExcelGamma(MaxAge,Alpha,Beta);
 			RtnRslt += CinHe3 * (GAMhalf2 - GAMhalf1);
-			if (MaxAge >= Tau && RtnRslt > 0)
+			if (MaxAge > Tau)
 			{
-				if ((RtnRslt - GAM1) / RtnRslt < Tol)
-				{
+				if (RtnRslt == 0)
 					return RtnRslt;
-				}
+				else if ((RtnRslt - GAM1) / RtnRslt < Tol)
+					return RtnRslt;
 			}
 		}
 	}
@@ -3125,12 +3125,12 @@ __declspec(dllexport) double WINAPI GAM(
 			
 			GAMhalf2 = ReturnExcelGamma(MaxAge,Alpha,Beta);
 			RtnRslt += Cin * UZdecay * (GAMhalf2 - GAMhalf1)*exp(-Lambda * MaxDecay);
-			if (MaxAge >= Tau && RtnRslt > 0)
+			if (MaxAge > Tau)
 			{
-				if ((RtnRslt - GAM1) / RtnRslt < Tol)
-				{
+				if (RtnRslt == 0)
 					return RtnRslt;
-				}
+				else if ((RtnRslt - GAM1) / RtnRslt < Tol)
+					return RtnRslt;
 			}
 		}
 	}
@@ -3184,13 +3184,13 @@ __declspec(dllexport) double WINAPI GAM_He4(
 		GAMhalf2 = ReturnExcelGamma(MaxAge,Alpha,Beta);
         GAMold=Result; 
 		Result += Cin * MaxAge * (GAMhalf2-GAMhalf1);
-        if (MaxAge >= Tau && Result > 0)
-			{
-				if ((Result - GAMold) / Result < Tol)
-				{
-					return Result;
-				}
-			}
+		if (MaxAge > Tau)
+		{
+			if (Result == 0)
+				return Result;
+			else if ((Result - GAMold) / Result < Tol)
+				return Result;
+		}
 	}
 	return Result;
 }
@@ -3559,10 +3559,11 @@ __declspec(dllexport) double WINAPI DM(
             Integral = gt_DMint(MaxAge - TimeIncrement, MaxAge, Tau, 0.0, DP);
             Result += CinHe3 * Integral;
 			//CummFrac+=Integral;
-			if (MaxAge > Tau) 
+			if (MaxAge > Tau)
 			{
-				Change = (Result - DMprev) / Result * 10;
-				if (Change < Tol)
+				if (Result == 0)
+					return Result;
+				else if ((Result - DMprev) / Result < Tol)
 					return Result;
 			}
 			//i++;
@@ -3601,7 +3602,7 @@ __declspec(dllexport) double WINAPI DM(
 			//CummFrac+=IntegralNoDecay;
 			if (MaxAge > Tau) 
 			{
-				Change = (DMnoDecay - DMprev) / DMnoDecay * 10;
+				Change = (DMnoDecay - DMprev) / DMnoDecay;
 				if (Change < Tol)
 					break;
 			}
@@ -3636,16 +3637,14 @@ __declspec(dllexport) double WINAPI DM(
             Integral = gt_DMint(MaxAge - TimeIncrement, MaxAge, Tau, Lambda, DP);
             Result += Cin * exp(-Lambda2 * UZtime) * Integral;
 			//CummFrac+=Integral/exp(-Lambda*(MaxAge-TimeIncrement/2));
-			if (MaxAge > Tau) 
+			if (MaxAge > Tau)
 			{
-				Change = (Result - DMprev) / Result * 10;
-				if (Change < Tol)
+				if (Result == 0)
+					return Result;
+				else if ((Result - DMprev) / Result < Tol)
 					return Result;
 			}
-
-			//i++;
-			
-		} //while (Change > Tol && i <= nIters);
+		} 
 	}
 	return Result;
 }
@@ -3661,7 +3660,7 @@ __declspec(dllexport) double WINAPI DM_He4(
 	{
 		return Result;
 	}
-    SimYears = 1000000;
+    SimYears = 5000000;
 	if (Tau < 100)
 	{
 		TimeIncrement = 1.0/12.0;
@@ -3674,10 +3673,10 @@ __declspec(dllexport) double WINAPI DM_He4(
 		}
 		else
 		{
-			TimeIncrement = Tau / 1000;
+			TimeIncrement = 5; //Tau / 1000;
 		}
 	}
-    nIters = (__int32) (SimYears / TimeIncrement);
+    //nIters = (__int32) (SimYears / TimeIncrement);
     Result = 0.0;
 	if (HeSolnRate != 0.0)
 	{
@@ -3697,8 +3696,8 @@ __declspec(dllexport) double WINAPI DM_He4(
         Result += Cin * MaxAge * Integral;
         //CummFrac+=Integral;
 		if (MaxAge > Tau) 
-				Change = (Result - DMold) / Result * 100;
-	} while (Change > Tol && i <= nIters);
+				Change = (Result - DMold) / Result;
+	} while (MaxAge < SimYears && Change);
 	return Result;
 }
 
