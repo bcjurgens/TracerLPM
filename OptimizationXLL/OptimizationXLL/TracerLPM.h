@@ -384,8 +384,12 @@ LPM::LPM(int ModelNum, LPXLOPER12 lxMeasTracerConcs, LPXLOPER12 lxFitParmIndexes
 		{
 			size=lxuzTime->val.array.columns*lxuzTime->val.array.rows;
 			obj.Tracer.UZtime.resize(size);
-			for(i=0;i<size;i++)
-				obj.Tracer.UZtime(i)=lxuzTime->val.array.lparray[i].val.num;
+			for (i = 0; i < size; i++)
+			{
+				//double checkVal = lxuzTime->val.array.lparray[i].val.num;
+				obj.Tracer.UZtime(i) = lxuzTime->val.array.lparray[i].val.num;
+			}
+				
 		}
 
 		//UZtimeCond
@@ -1858,7 +1862,14 @@ VectorXd LPM::LPM_TracerOutput(double MeanAge, double ModelParm1, double ModelPa
 				break;
 
 				case 6:
-					CTwo=PEM_Int(MeanAge_2,ModelParm1_2,ModelParm2_2,sampleDate); //6
+					if (SingleNum == 6)
+					{
+						double MidPt = ModelParm1 / (ModelParm1 + 1) + (ModelParm2_2 / (ModelParm2_2 + 1) - ModelParm1 / (ModelParm1 + 1))*Fraction;
+						double MidPEM = MidPt / (1 - MidPt);
+						CTwo = PEM_Int(MeanAge_2, MidPEM, ModelParm2_2, sampleDate); //6
+					}
+					else
+						CTwo=PEM_Int(MeanAge_2,ModelParm1_2,ModelParm2_2,sampleDate); //6
 				break;
 	
 				case 7:
@@ -1890,7 +1901,14 @@ VectorXd LPM::LPM_TracerOutput(double MeanAge, double ModelParm1, double ModelPa
 			break;
 
 			case 6:
-				TracerOutput=PEM_Int(MeanAge,ModelParm1,ModelParm2,sampleDate); //6
+				if (BinaryNum == 6)
+				{
+					double MidPt = ModelParm1 / (ModelParm1 + 1) + (ModelParm2_2 / (ModelParm2_2 + 1) - ModelParm1 / (ModelParm1 + 1))*Fraction;
+					double MidPEM = MidPt / (1 - MidPt);
+					TracerOutput = PEM_Int(MeanAge, ModelParm1, MidPEM, sampleDate); //6
+				}
+				else
+					TracerOutput=PEM_Int(MeanAge,ModelParm1,ModelParm2,sampleDate); //6
 			break;
 	
 			case 7:
@@ -1940,7 +1958,7 @@ VectorXd LPM::d_dx_LPM_Model(double MeanAge, double ModelParm1, double ModelParm
 	VectorXd xUZtime, return1, return2, return3, return4, Result;
 	bool IsZero;
 	
-	double Delta, ScaleFact;
+	double Delta, ScaleFact, d_dx_sum;
 	__int64 n, k;
 
 	n=obj.Sample.SampleDates.size();
@@ -2077,19 +2095,35 @@ VectorXd LPM::d_dx_LPM_Model(double MeanAge, double ModelParm1, double ModelParm
 			break;
 		};
 		double test;
+		IsZero = false;
+		d_dx_sum = 0;
 		for (int i = 0; i < return4.size(); i++)
 		{
-			IsZero = false;
 			test = Result(i) = (return1(i) - 8 * return2(i) + 8 * return3(i) - return4(i)) / (12 * Delta);
+			d_dx_sum += Result(i);
 			if (Result(i) == 0)
 			{
 				IsZero = true;
 			}
 		}
-		if(IsZero==true)
-			ScaleFact = pow(10,k);
+		if (IsZero == true)
+		{
+			ScaleFact = pow(10, k);
+		}
 		k++;
-	}while (IsZero && k<4);
+	}while (IsZero && k<4 && return4.size()==1);
+	/*if (IsZero == true)
+	{
+		for (int i = 0; i < return4.size(); i++)
+		{
+			if (Result(i) == 0)
+			{
+				Result(i) = d_dx_sum / return4.size();
+			}
+		}
+		IsZero = false;
+		//ScaleFact = pow(10, k);
+	}*/
 	return Result;
 }
 

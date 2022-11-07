@@ -1463,10 +1463,11 @@ __declspec(dllexport) double WINAPI UserDefinedTracerOut(
 		}
 		DR = round(1e6*DateRange->array[j]) / 1e6;
 		DateLookup = round(1e6*(SampleDate - DR - UZtime)) / 1e6;
-		while ((DateLookup <= AgeRange->array[i]) && j != StopCriteria)
+		while ((DateLookup < AgeRange->array[i]) && j != StopCriteria)
 		{
 			j = j - StepInc;
 			DR = round(1e6*DateRange->array[j]) / 1e6;
+			DateLookup = round(1e6*(SampleDate - DR - UZtime)) / 1e6;
 		}
 		if (HeliumThree->val.xbool == TRUE)
 		{
@@ -1485,11 +1486,12 @@ __declspec(dllexport) double WINAPI UserDefinedTracerOut(
 				if (j != StopCriteria)
 				{
 					DateLookup = round(1e6*(SampleDate - DR - UZtime)) / 1e6;
-					while ((DateLookup <= AgeRange->array[i+1]) && j != StopCriteria)
+					while ((DateLookup < AgeRange->array[i+1]) && j != StopCriteria)
 					{
 						n++;
 						j = j - StepInc;
 						DR = round(1e6*DateRange->array[j]) / 1e6;
+						DateLookup = round(1e6*(SampleDate - DR - UZtime)) / 1e6;
 						Cin += TracerRange->array[j];
 					}
 				}
@@ -1497,7 +1499,7 @@ __declspec(dllexport) double WINAPI UserDefinedTracerOut(
 				{
 					Cin = (Cin - TracerRange->array[j]) / n;
 				}
-				Result += RechFracRange->array[i] * Cin * exp (-Lambda2 * UZtime) * (1 - exp (-Lambda2 * AgeRange->array[i]));
+				Result += RechFracRange->array[i] * Cin * exp (-Lambda2 * UZtime) * (1 - exp(-Lambda2 * (AgeRange->array[i] + AgeRange->array[i - 1]) / 2));
 			}
 			return Result;
 		}
@@ -1518,11 +1520,12 @@ __declspec(dllexport) double WINAPI UserDefinedTracerOut(
 				if (j != StopCriteria)
 				{
 					DateLookup = round(1e6*(SampleDate - DR - UZtime)) / 1e6;
-					while ((DateLookup <= AgeRange->array[i+1]) && j != StopCriteria)
+					while ((DateLookup < AgeRange->array[i+1]) && j != StopCriteria)
 					{
 						n++;
 						j = j - StepInc;
 						DR = round(1e6*DateRange->array[j]) / 1e6;
+						DateLookup = round(1e6*(SampleDate - DR - UZtime)) / 1e6;
 						Cin += TracerRange->array[j];
 					}
 				}
@@ -1530,7 +1533,7 @@ __declspec(dllexport) double WINAPI UserDefinedTracerOut(
 				{
 					Cin = (Cin - TracerRange->array[j]) / n;
 				}
-				Result += RechFracRange->array[i] * Cin * exp (-Lambda2 * UZtime) * exp (-Lambda * AgeRange->array[i]); //Tritium
+				Result += RechFracRange->array[i] * Cin * exp (-Lambda2 * UZtime) * exp(-Lambda * (AgeRange->array[i] + AgeRange->array[i - 1]) / 2); //Tritium
 				Res2 += RechFracRange->array[i] * Cin * exp (-Lambda2 * UZtime); // Initialtritium
 			}
 			Result = Result / Res2;
@@ -1553,11 +1556,12 @@ __declspec(dllexport) double WINAPI UserDefinedTracerOut(
 				if (j != StopCriteria)
 				{
 					DateLookup = round(1e6*(SampleDate - DR - UZtime)) / 1e6;
-					while ((DateLookup <= AgeRange->array[i+1]) && j != StopCriteria)
+					while ((DateLookup < AgeRange->array[i+1]) && j != StopCriteria)
 					{
 						n++;
 						j = j - StepInc;
 						DR = round(1e6*DateRange->array[j]) / 1e6;
+						DateLookup = round(1e6*(SampleDate - DR - UZtime)) / 1e6;
 						Cin += TracerRange->array[j];
 					}
 				}
@@ -1565,7 +1569,7 @@ __declspec(dllexport) double WINAPI UserDefinedTracerOut(
 				{
 					Cin = (Cin - TracerRange->array[j]) / n;
 				}
-				Result += RechFracRange->array[i] * Cin * exp (-Lambda2 * UZtime) * exp (-Lambda * AgeRange->array[i]);
+				Result += RechFracRange->array[i] * Cin * exp (-Lambda2 * UZtime) * exp (-Lambda * (AgeRange->array[i] + AgeRange->array[i-1]) / 2);
 			}
 			return Result;
 		}

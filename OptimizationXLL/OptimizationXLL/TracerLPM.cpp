@@ -415,10 +415,21 @@ __declspec(dllexport) LPXLOPER12 WINAPI SolveNewtonMethod(LPXLOPER12 lxMeasTrace
 						if (Solver.obj.Model.HiBounds((int)Solver.obj.Model.FitParmIndexes.Val[j] - 1) - V(j) < e(j))
 						{
 							e(j) = ScaleFact*(Solver.obj.Model.HiBounds((int)Solver.obj.Model.FitParmIndexes.Val[j] - 1) - V(j));
+							double checkVal = (Solver.obj.Model.HiBounds((int)Solver.obj.Model.FitParmIndexes.Val[j] - 1) - V(j)) / Solver.obj.Model.HiBounds((int)Solver.obj.Model.FitParmIndexes.Val[j] - 1); 
+							if (e(j) < Tol*Solver.obj.Model.HiBounds((int)Solver.obj.Model.FitParmIndexes.Val[j] - 1)-Tol)
+							{
+								e(j) = 0;
+								V(j) = Solver.obj.Model.HiBounds((int)Solver.obj.Model.FitParmIndexes.Val[j] - 1);
+							}
 						}
 						else if (e(j) < Solver.obj.Model.LowBounds((int)Solver.obj.Model.FitParmIndexes.Val[j] - 1) - V(j))
 						{
 							e(j) = ScaleFact*(Solver.obj.Model.LowBounds((int)Solver.obj.Model.FitParmIndexes.Val[j] - 1) - V(j));
+							if (e(j) > (Tol*Solver.obj.Model.LowBounds((int)Solver.obj.Model.FitParmIndexes.Val[j] - 1)+Tol))
+							{
+								e(j) = 0;
+								V(j) = Solver.obj.Model.HiBounds((int)Solver.obj.Model.FitParmIndexes.Val[j] - 1);
+							}
 						}
 					}
 					do
@@ -468,30 +479,30 @@ __declspec(dllexport) LPXLOPER12 WINAPI SolveNewtonMethod(LPXLOPER12 lxMeasTrace
 						}
 						ChiSqrDiff = ChiSqr - PrevChiSqr;
 						Mult *= ScaleFact;
-						} while (ChiSqrDiff > 0.0 && Mult > Tol);
-						if (Mult < Tol && dLevFactor < 10000)
-						{
-							if (dLevFactor == 0.0)
-								dLevFactor = 1.0;
-							else
-								dLevFactor *= 10;
-							for (k = 0; k < n; k++)
-							{
-								ModelArgs[(int)Solver.obj.Model.FitParmIndexes.Val[k] - 1] = V(k);
-							}
-						}
+					} while (ChiSqrDiff > 0.0 && Mult > Tol);
+					if (Mult < Tol && dLevFactor < 10000)
+					{
+						if (dLevFactor == 0.0)
+							dLevFactor = 1.0;
 						else
+							dLevFactor *= 10;
+						for (k = 0; k < n; k++)
 						{
-							Mult /= ScaleFact;
-							e *= Mult;
-							PrevNormV = NormV;
-							NormV = e.norm();
-							for (i = 0; i < n; i++)
-								V(i) = ModelArgs[(int)Solver.obj.Model.FitParmIndexes.Val[i] - 1];
-							NormV_Diff = (double)abs(PrevNormV - NormV);
-							if (dLevFactor > 0.0  && ChiSqrDiff < 0.0)
-								dLevFactor /= 10.0;
+							ModelArgs[(int)Solver.obj.Model.FitParmIndexes.Val[k] - 1] = V(k);
 						}
+					}
+					else
+					{
+						Mult /= ScaleFact;
+						e *= Mult;
+						PrevNormV = NormV;
+						NormV = e.norm();
+						for (i = 0; i < n; i++)
+							V(i) = ModelArgs[(int)Solver.obj.Model.FitParmIndexes.Val[i] - 1];
+						NormV_Diff = (double)abs(PrevNormV - NormV);
+						if (dLevFactor > 0.0  && ChiSqrDiff < 0.0)
+							dLevFactor /= 10.0;
+					}
 				} while (NormV > Tol && NormV_Diff > Tol && nIters < MaxIters);
 				//Output begins here
 				if (SimCnt == 0)

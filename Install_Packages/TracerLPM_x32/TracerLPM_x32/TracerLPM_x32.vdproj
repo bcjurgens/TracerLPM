@@ -15,6 +15,12 @@
     {
         "Entry"
         {
+        "MsmKey" = "8:_29D1D996B232483BB9F27C16D90894CF"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_32FCCA099E294BF6A3E681435A5D62DE"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -39,7 +45,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_6AC0E9D540064078959B7BD80051B1E3"
+        "MsmKey" = "8:_755476AF75784857A90F9CD16BF21726"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -52,12 +58,6 @@
         "Entry"
         {
         "MsmKey" = "8:_835D6CA0EBDD40B8B0BE64A2C586AC64"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_8EA5B4030071452C8C2461B995358C03"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -81,13 +81,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_ECA6D970DA26473EB4DDEA560C0FB638"
+        "MsmKey" = "8:_D75D88D93F844AF5B9E05E533CED7793"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_F1770495C21B4874895981D3C2012DDF"
+        "MsmKey" = "8:_ECA6D970DA26473EB4DDEA560C0FB638"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -184,6 +184,26 @@
         }
         "File"
         {
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_29D1D996B232483BB9F27C16D90894CF"
+            {
+            "SourcePath" = "8:..\\..\\..\\Workbook\\Examples\\TracerLPM_V_B3_4B_Example_2.xlsm"
+            "TargetName" = "8:TracerLPM_V_B3_4B_Example_2.xlsm"
+            "Tag" = "8:"
+            "Folder" = "8:_51A41A65C78A4A1182A50D6BF8A9B589"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_32FCCA099E294BF6A3E681435A5D62DE"
             {
             "SourcePath" = "8:..\\..\\Installing_TracerLPM.txt"
@@ -224,12 +244,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6AC0E9D540064078959B7BD80051B1E3"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_755476AF75784857A90F9CD16BF21726"
             {
-            "SourcePath" = "8:..\\..\\..\\Workbook\\TracerLPM_V_B2_9.xlsm"
-            "TargetName" = "8:TracerLPM_V_B2_9.xlsm"
+            "SourcePath" = "8:..\\..\\..\\Workbook\\Examples\\TracerLPM_V_B3_4B_Example_1.xlsm"
+            "TargetName" = "8:TracerLPM_V_B3_4B_Example_1.xlsm"
             "Tag" = "8:"
-            "Folder" = "8:_4AD7896149D545889400F37DFD118C86"
+            "Folder" = "8:_51A41A65C78A4A1182A50D6BF8A9B589"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -250,26 +270,6 @@
             "TargetName" = "8:TracerLPM_small.ico"
             "Tag" = "8:"
             "Folder" = "8:_4AD7896149D545889400F37DFD118C86"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8EA5B4030071452C8C2461B995358C03"
-            {
-            "SourcePath" = "8:..\\..\\..\\Workbook\\Examples\\TracerLPM_V_B2_9_Example_1.xlsm"
-            "TargetName" = "8:TracerLPM_V_B2_9_Example_1.xlsm"
-            "Tag" = "8:"
-            "Folder" = "8:_51A41A65C78A4A1182A50D6BF8A9B589"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -344,12 +344,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F1770495C21B4874895981D3C2012DDF"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D75D88D93F844AF5B9E05E533CED7793"
             {
-            "SourcePath" = "8:..\\..\\..\\Workbook\\Examples\\TracerLPM_V_B2_9_Example_2.xlsm"
-            "TargetName" = "8:TracerLPM_V_B2_9_Example_2.xlsm"
+            "SourcePath" = "8:..\\..\\..\\Workbook\\TracerLPM_V_B3_4B.xlsm"
+            "TargetName" = "8:TracerLPM_V_B3_4B.xlsm"
             "Tag" = "8:"
-            "Folder" = "8:_51A41A65C78A4A1182A50D6BF8A9B589"
+            "Folder" = "8:_4AD7896149D545889400F37DFD118C86"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -474,15 +474,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:TracerLPM_x32"
-        "ProductCode" = "8:{F3DF887A-496C-4D15-BE58-68453B29CBB7}"
-        "PackageCode" = "8:{EA387335-2334-4968-94D6-2B06973180A3}"
+        "ProductCode" = "8:{785C46DE-78D0-4BEB-896C-021C7C680328}"
+        "PackageCode" = "8:{6E57A580-A4AD-4859-BAD1-FBB584D23A79}"
         "UpgradeCode" = "8:{47E12FB6-C93F-422F-A2E0-EC4085760F2A}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:2.0.0"
+        "ProductVersion" = "8:2.0.1"
         "Manufacturer" = "8:United States Geological Survey (USGS)"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -491,7 +491,7 @@
         "ARPCONTACT" = "8:Bryant C. Jurgens"
         "Keywords" = "8:"
         "ARPCOMMENTS" = "8:An Excel workbook program for evaluating groundwater age distributionis from environmental tracer data"
-        "ARPURLINFOABOUT" = "8:"
+        "ARPURLINFOABOUT" = "8:https://www.usgs.gov/software/tracerlpm"
         "ARPPRODUCTICON" = "8:"
         "ARPIconIndex" = "3:0"
         "SearchPath" = "8:"
@@ -603,7 +603,7 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_6AC0E9D540064078959B7BD80051B1E3"
+            "Target" = "8:_D75D88D93F844AF5B9E05E533CED7793"
             "Folder" = "8:_E7E36F9148B140AC9357288B96AD8BC3"
             "WorkingFolder" = "8:_4AD7896149D545889400F37DFD118C86"
             "Icon" = "8:_835D6CA0EBDD40B8B0BE64A2C586AC64"
@@ -617,7 +617,7 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_6AC0E9D540064078959B7BD80051B1E3"
+            "Target" = "8:_D75D88D93F844AF5B9E05E533CED7793"
             "Folder" = "8:_5529C28A94074456872887A4C9113F13"
             "WorkingFolder" = "8:_4AD7896149D545889400F37DFD118C86"
             "Icon" = "8:_C8D415B5A6ED4009B5F05595304A0ED1"

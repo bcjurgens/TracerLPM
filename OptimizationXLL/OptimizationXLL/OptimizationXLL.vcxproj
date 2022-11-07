@@ -104,7 +104,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <OutputFile>$(OutDir)$(ProjectName).xll</OutputFile>
+      <OutputFile>$(OutDir)TracerLPM_Opt_32.xll</OutputFile>
       <AdditionalLibraryDirectories>C:\2010 Office System Developer Resources\Excel2010XLLSDK\LIB</AdditionalLibraryDirectories>
       <AdditionalDependencies>xlcall32.lib;frmwrk32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>TracerLPM.def</ModuleDefinitionFile>
